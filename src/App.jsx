@@ -1,0 +1,602 @@
+import londonBridgeImg from './assets/images/london-bridge.jpg'
+import hotAirBalloon from './assets/images/hotairballoon.jpg'
+import hotAirBalloonOnWater from './assets/images/hotairballoononwater.jpg'
+import qwe from './assets/images/qwe.jpg'
+import foodAndDrinksImg from './assets/images/food_and_drinks.jpg'
+import shopsImg from './assets/images/shops.jpg'
+import eventsAndOffersImg from './assets/images/events_and_offers.jpg'
+import stateParkImg from './assets/images/LAKE HAVASU STATE PARK.png'
+import altitudeLogo from './assets/images/logos/altitude.svg'
+import beallsLogo from './assets/images/logos/bealls.webp'
+import dillardsLogo from './assets/images/logos/dillards.svg'
+import greatClipsLogo from './assets/images/logos/greatclips.png'
+import jcpenneyLogo from './assets/images/logos/jcpenney.png'
+import mauricesLogo from './assets/images/logos/maurices.svg'
+import petsmartLogo from './assets/images/logos/petsmart.png'
+import sallyLogo from './assets/images/logos/sally.webp'
+
+import { useEffect, useMemo, useRef, useState } from 'react'
+
+const HERO_IMAGE = londonBridgeImg
+
+function IconMenu(props) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" {...props}>
+      <path d="M4 6h16" />
+      <path d="M4 12h16" />
+      <path d="M4 18h16" />
+    </svg>
+  )
+}
+
+function IconUser(props) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+      <path d="M20 21a8 8 0 0 0-16 0" />
+      <circle cx="12" cy="7" r="4" />
+    </svg>
+  )
+}
+
+function IconArrowRight(props) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+      <path d="M5 12h14" />
+      <path d="M13 5l7 7-7 7" />
+    </svg>
+  )
+}
+
+function getWeatherLabelFromCode(code) {
+  const c = Number(code)
+
+  if (Number.isNaN(c)) return 'Weather'
+  if (c === 0) return 'Clear'
+  if (c === 1 || c === 2) return 'Mostly clear'
+  if (c === 3) return 'Cloudy'
+  if (c === 45 || c === 48) return 'Fog'
+  if ((c >= 51 && c <= 57) || (c >= 61 && c <= 67)) return 'Rain'
+  if (c >= 71 && c <= 77) return 'Snow'
+  if (c >= 80 && c <= 82) return 'Showers'
+  if (c >= 95) return 'Storms'
+
+  return 'Weather'
+}
+
+function getWeatherIconTypeFromCode(code) {
+  const c = Number(code)
+
+  if (Number.isNaN(c)) return 'cloud'
+  if (c === 0) return 'sun'
+  if (c === 1 || c === 2 || c === 3) return 'cloud'
+  if (c === 45 || c === 48) return 'cloud'
+  if ((c >= 51 && c <= 57) || (c >= 61 && c <= 67) || (c >= 80 && c <= 82)) return 'rain'
+  if (c >= 71 && c <= 77) return 'cloud'
+  if (c >= 95) return 'rain'
+
+  return 'cloud'
+}
+
+function WeatherIcon({ type, className }) {
+  if (type === 'sun') {
+    return (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className={className} aria-hidden="true">
+        <circle cx="12" cy="12" r="4" />
+        <path d="M12 2v2" />
+        <path d="M12 20v2" />
+        <path d="M4.93 4.93l1.41 1.41" />
+        <path d="M17.66 17.66l1.41 1.41" />
+        <path d="M2 12h2" />
+        <path d="M20 12h2" />
+        <path d="M4.93 19.07l1.41-1.41" />
+        <path d="M17.66 6.34l1.41-1.41" />
+      </svg>
+    )
+  }
+
+  if (type === 'rain') {
+    return (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className={className} aria-hidden="true">
+        <path d="M7 15a4 4 0 0 1 0-8 5.5 5.5 0 0 1 10.6 1.7A3.5 3.5 0 0 1 18.5 15H7z" />
+        <path d="M8 19l-1 2" />
+        <path d="M12 19l-1 2" />
+        <path d="M16 19l-1 2" />
+      </svg>
+    )
+  }
+
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className={className} aria-hidden="true">
+      <path d="M7 15a4 4 0 0 1 0-8 5.5 5.5 0 0 1 10.6 1.7A3.5 3.5 0 0 1 18.5 15H7z" />
+    </svg>
+  )
+}
+
+export default function App() {
+  const typeWords = useMemo(() => ['shopping', 'fun', 'dining', 'movies', 'games'], [])
+  const [wordIndex, setWordIndex] = useState(0)
+  const [charIndex, setCharIndex] = useState(0)
+  const [isDeleting, setIsDeleting] = useState(false)
+
+  const [weather, setWeather] = useState({ status: 'loading', tempF: null, label: '', code: null })
+
+  const balloonSectionRef = useRef(null)
+  const [balloonParallaxY, setBalloonParallaxY] = useState(0)
+
+  const featureCards = useMemo(
+    () => [
+      { title: 'Food and Drinks', cta: 'Discover More', image: foodAndDrinksImg },
+      { title: 'Shops', cta: 'Discover More', image: shopsImg },
+      { title: 'Events', cta: 'Discover More', image: eventsAndOffersImg },
+    ],
+    [],
+  )
+
+  const marqueeLogos = useMemo(
+    () => [
+      { src: altitudeLogo, alt: 'Altitude' },
+      { src: beallsLogo, alt: "Bealls" },
+      { src: dillardsLogo, alt: "Dillard's" },
+      { src: greatClipsLogo, alt: 'Great Clips' },
+      { src: jcpenneyLogo, alt: 'JCPenney' },
+      { src: mauricesLogo, alt: "Maurices" },
+      { src: petsmartLogo, alt: 'PetSmart' },
+      { src: sallyLogo, alt: 'Sally Beauty' },
+    ],
+    [],
+  )
+
+  useEffect(() => {
+    const currentWord = typeWords[wordIndex] ?? ''
+    const isWordComplete = !isDeleting && charIndex === currentWord.length
+    const isWordEmpty = isDeleting && charIndex === 0
+
+    let delay = 90
+
+    if (isWordComplete) delay = 900
+    else if (isDeleting) delay = 45
+    else if (charIndex === 0) delay = 250
+
+    const t = setTimeout(() => {
+      if (isWordComplete) {
+        setIsDeleting(true)
+        return
+      }
+
+      if (isWordEmpty) {
+        setIsDeleting(false)
+        setWordIndex((i) => (i + 1) % typeWords.length)
+        return
+      }
+
+      setCharIndex((n) => n + (isDeleting ? -1 : 1))
+    }, delay)
+
+    return () => clearTimeout(t)
+  }, [charIndex, isDeleting, typeWords, wordIndex])
+
+  const typedText = (typeWords[wordIndex] ?? '').slice(0, charIndex)
+
+  useEffect(() => {
+    let cancelled = false
+
+    const fetchWeather = async () => {
+      try {
+        const url = new URL('https://api.open-meteo.com/v1/forecast')
+        url.searchParams.set('latitude', '34.4839')
+        url.searchParams.set('longitude', '-114.3225')
+        url.searchParams.set('current', 'temperature_2m,weather_code')
+        url.searchParams.set('temperature_unit', 'fahrenheit')
+        url.searchParams.set('timezone', 'auto')
+
+        const res = await fetch(url.toString())
+        if (!res.ok) throw new Error(`Weather request failed: ${res.status}`)
+
+        const data = await res.json()
+        const tempF = data?.current?.temperature_2m
+        const code = data?.current?.weather_code
+
+        if (cancelled) return
+
+        setWeather({
+          status: 'ready',
+          tempF: typeof tempF === 'number' ? tempF : null,
+          label: getWeatherLabelFromCode(code),
+          code: typeof code === 'number' ? code : null,
+        })
+      } catch {
+        if (cancelled) return
+        setWeather({ status: 'error', tempF: null, label: '', code: null })
+      }
+    }
+
+    fetchWeather()
+    const id = setInterval(fetchWeather, 10 * 60 * 1000)
+
+    return () => {
+      cancelled = true
+      clearInterval(id)
+    }
+  }, [])
+
+  useEffect(() => {
+    const el = balloonSectionRef.current
+    if (!el) return
+
+    let raf = 0
+
+    const update = () => {
+      raf = 0
+      const rect = el.getBoundingClientRect()
+      const vh = window.innerHeight || 0
+
+      if (rect.bottom <= 0 || rect.top >= vh) return
+
+      const elementCenter = rect.top + rect.height / 2
+      const viewportCenter = vh / 2
+      const distanceFromCenter = elementCenter - viewportCenter
+
+      const rawOffset = -distanceFromCenter * 0.32
+      const clampedOffset = Math.max(-160, Math.min(160, rawOffset))
+
+      setBalloonParallaxY(clampedOffset)
+    }
+
+    const onScroll = () => {
+      if (raf) return
+      raf = window.requestAnimationFrame(update)
+    }
+
+    update()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('resize', onScroll)
+
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', onScroll)
+      if (raf) window.cancelAnimationFrame(raf)
+    }
+  }, [])
+
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-palette-white via-palette-pearlAqua/30 to-palette-camel/20 text-neutral-900">
+      <header className="relative isolate">
+        <div
+          className="relative h-[62vh] min-h-[420px] w-full bg-cover bg-center"
+          style={{ backgroundImage: `url(${HERO_IMAGE})` }}
+        >
+          <div className="absolute inset-0 bg-palette-darkCyan/25" />
+
+          <div className="absolute inset-x-0 top-0 z-10">
+            <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5 text-white">
+              <button
+                type="button"
+                aria-label="Open menu"
+                className="inline-flex h-10 w-10 items-center justify-center md:hidden"
+              >
+                <IconMenu className="h-6 w-6" />
+              </button>
+
+              <div className="flex items-center gap-4">
+                <div className="h-9 w-1 rounded-full bg-palette-bronze" aria-hidden="true" />
+                <div className="leading-tight">
+                  <div className="text-sm font-extrabold tracking-[0.2em]">THE SHOPS</div>
+                  <div className="text-[11px] font-semibold tracking-[0.25em] text-white/90">AT LAKE HAVASU</div>
+                </div>
+              </div>
+
+              <nav className="hidden items-center gap-8 text-sm font-semibold tracking-wide md:flex">
+                <a className="hover:text-white/85" href="#">Home</a>
+                <a className="hover:text-white/85" href="#">Stores</a>
+                <a className="hover:text-white/85" href="#">Events</a>
+                <a className="hover:text-white/85" href="#">Maps</a>
+                <div className="flex items-center gap-2 rounded-full border border-white/35 bg-white/10 px-3 py-1 text-[12px] font-semibold tracking-wide text-white backdrop-blur">
+                  <span className="text-white/80">Lake Havasu</span>
+                  <span className="h-3 w-px bg-white/30" aria-hidden="true" />
+                  {weather.status === 'ready' && typeof weather.tempF === 'number' ? (
+                    <span className="inline-flex items-center gap-1">
+                      <WeatherIcon type={getWeatherIconTypeFromCode(weather.code)} className="h-4 w-4 text-white/90" />
+                      <span>{Math.round(weather.tempF)}°F</span>
+                    </span>
+                  ) : weather.status === 'error' ? (
+                    <span className="text-white/80">Weather unavailable</span>
+                  ) : (
+                    <span className="text-white/80">Loading…</span>
+                  )}
+                  {weather.status === 'ready' && weather.label ? (
+                    <span className="hidden lg:inline text-white/80">{weather.label}</span>
+                  ) : null}
+                </div>
+              </nav>
+            </div>
+          </div>
+
+          <div className="relative z-0 flex h-full items-center">
+            <div className="mx-auto w-full max-w-6xl px-6">
+              <div className="max-w-3xl">
+                <h1 className="text-5xl font-extrabold tracking-tight text-white drop-shadow md:text-6xl">
+                  This is where havasu comes for{' '}
+                  <span className="text-[rgb(167_241_247_/_0.9)]">
+                    {typedText}
+                    <span className="inline-block w-[0.6ch] -translate-y-[0.06em] animate-pulse text-[rgb(133_195_200_/_0.95)]">|</span>
+                  </span>
+                </h1>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main>
+        <section className="bg-palette-white">
+          <div className="mx-auto max-w-6xl px-6 py-14">
+            <div className="flex items-end justify-between gap-6">
+              <div>
+                <div className="text-xs font-semibold tracking-[0.25em] text-palette-darkCyan">WHAT'S HAPPENING</div>
+                <h2 className="mt-2 text-3xl font-extrabold tracking-tight text-neutral-900">Events &amp; Specials</h2>
+              </div>
+
+              <a
+                href="#"
+                className="hidden rounded-md bg-palette-darkCyan px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-palette-bronze md:inline-flex"
+              >
+                View all
+              </a>
+            </div>
+
+            <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              <article className="rounded-xl border border-neutral-200 bg-white p-6 shadow-sm">
+                <div className="text-xs font-semibold tracking-[0.25em] text-palette-camel">FRI • 7:00 PM</div>
+                <h3 className="mt-3 text-lg font-bold text-neutral-900">Live Music on the Walkway</h3>
+                <p className="mt-2 text-sm leading-6 text-neutral-700">Grab dinner, stroll the shops, and enjoy local bands by the water.</p>
+                <div className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-palette-darkCyan">
+                  Details
+                  <span className="text-palette-bronze" aria-hidden="true">→</span>
+                </div>
+              </article>
+
+              <article className="rounded-xl border border-neutral-200 bg-white p-6 shadow-sm">
+                <div className="text-xs font-semibold tracking-[0.25em] text-palette-camel">SAT • ALL DAY</div>
+                <h3 className="mt-3 text-lg font-bold text-neutral-900">Family Fun Day</h3>
+                <p className="mt-2 text-sm leading-6 text-neutral-700">Games, giveaways, and kid-friendly activities throughout the plaza.</p>
+                <div className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-palette-darkCyan">
+                  Details
+                  <span className="text-palette-bronze" aria-hidden="true">→</span>
+                </div>
+              </article>
+
+              <article className="rounded-xl border border-neutral-200 bg-white p-6 shadow-sm">
+                <div className="text-xs font-semibold tracking-[0.25em] text-palette-camel">SUN • 4:00 PM</div>
+                <h3 className="mt-3 text-lg font-bold text-neutral-900">Dining &amp; Dessert Specials</h3>
+                <p className="mt-2 text-sm leading-6 text-neutral-700">Limited-time offers from your favorite spots—come hungry.</p>
+                <div className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-palette-darkCyan">
+                  Details
+                  <span className="text-palette-bronze" aria-hidden="true">→</span>
+                </div>
+              </article>
+            </div>
+
+            <div className="mt-8 md:hidden">
+              <a
+                href="#"
+                className="inline-flex w-full items-center justify-center rounded-md bg-palette-darkCyan px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-palette-bronze"
+              >
+                View all
+              </a>
+            </div>
+          </div>
+        </section>
+
+        <section className="bg-gradient-to-br from-palette-white via-palette-pearlAqua/45 to-palette-camel/35">
+          <div className="w-full px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
+            <div className="grid gap-6 lg:grid-cols-3">
+              {featureCards.map((card) => (
+                <a
+                  key={card.title}
+                  href="#"
+                  className="group relative isolate w-full overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-md"
+                >
+                  <div
+                    className="h-[320px] w-full bg-cover bg-center transition-transform duration-700 group-hover:scale-[1.03] sm:h-[360px] lg:h-[420px]"
+                    style={{ backgroundImage: `url(${card.image})` }}
+                  />
+
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-black/10" />
+
+                  <div className="absolute inset-x-0 bottom-0 p-6">
+                    <h3 className="text-2xl font-extrabold tracking-tight text-white">{card.title}</h3>
+                    <div className="mt-3 inline-flex items-center gap-2 rounded-full bg-palette-bronze px-5 py-2.5 text-sm font-semibold text-white transition-colors group-hover:bg-palette-darkCyan">
+                      {card.cta}
+                      <span className="text-white" aria-hidden="true">→</span>
+                    </div>
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/*
+        <section className="bg-palette-white">
+          <div className="mx-auto max-w-6xl px-6 py-14">
+            <div className="grid gap-10 lg:grid-cols-12 lg:items-start">
+              <div className="lg:col-span-4">
+                <div className="text-xs font-semibold tracking-[0.25em] text-palette-darkCyan">GET TO KNOW US</div>
+                <h2 className="mt-2 text-3xl font-extrabold tracking-tight text-neutral-900">Get to know us a little more</h2>
+                <div className="mt-4 h-1 w-16 rounded-full bg-palette-bronze" aria-hidden="true" />
+              </div>
+
+              <div className="lg:col-span-8">
+                <div className="rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm sm:p-8">
+                  <p className="text-sm leading-7 text-neutral-800">
+                    The Shops at Lake Havasu is an open-air shopping destination at the heart of Lake Havasu City. Since 2008, we've brought together top national retailers, local favorites, and community events—all in one spacious, walkable setting.
+                  </p>
+                  <p className="mt-5 text-sm leading-7 text-neutral-800">
+                    With over 720,000 square feet of retail, dining, and entertainment, our center is designed for both locals and visitors to enjoy. From weekend events to everyday essentials, there's always something new to discover.
+                  </p>
+                  <p className="mt-5 text-sm leading-7 text-neutral-800">
+                    Come shop, stroll, and experience what makes The Shops at Lake Havasu more than just a mall.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        */}
+
+        <section className="relative isolate">
+          <div
+            className="relative h-[340px] w-full bg-palette-white sm:h-[420px] lg:h-[520px]"
+          >
+            <div className="absolute inset-0 flex items-center">
+              <div className="pointer-events-none w-full">
+                <div className="relative left-1/2 w-[140%] -translate-x-1/2 -rotate-6">
+                  <div className="logo-marquee w-full opacity-55">
+                    <div className="logo-marquee-track gap-5 px-4 sm:gap-7 sm:px-6">
+                      {marqueeLogos
+                        .concat(marqueeLogos)
+                        .map((logo, i) => (
+                          <div
+                            key={`${logo.alt}-${i}`}
+                            className="flex h-14 w-[200px] items-center justify-center rounded-full border border-palette-darkCyan/30 bg-white/80 px-6 backdrop-blur"
+                          >
+                            <div className="h-8 w-[140px]">
+                            <img
+                              src={logo.src}
+                              alt={logo.alt}
+                              className="h-full w-full object-contain opacity-90"
+                              loading="lazy"
+                            />
+                            </div>
+                          </div>
+                        ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full px-3 sm:px-6 lg:px-10">
+                <div className="mx-auto max-w-7xl">
+                  <h2 className="grid grid-cols-[1fr_auto_1fr] items-end gap-x-4 font-display uppercase text-palette-darkCyan sm:gap-x-6">
+                    <span className="justify-self-end text-center leading-[0.78] tracking-[0.06em] origin-bottom scale-y-[1.25] text-[14vw] sm:text-[110px] lg:text-[150px]">Discounts</span>
+                    <span className="px-3 text-center leading-[0.78] tracking-[0.06em] origin-bottom scale-y-[1.25] text-[14vw] sm:text-[110px] lg:text-[150px]">And</span>
+                    <span className="justify-self-start text-center leading-[0.78] tracking-[0.06em] origin-bottom scale-y-[1.25] text-[14vw] sm:text-[110px] lg:text-[150px]">Offers</span>
+                  </h2>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="bg-white" ref={balloonSectionRef}>
+          <div className="relative w-full overflow-hidden">
+            <div className="absolute inset-0 bg-black">
+              <img
+                src={qwe}
+                alt="Hot air balloon"
+                className="h-full w-full object-cover will-change-transform"
+                style={{ transform: `translate3d(0, ${balloonParallaxY}px, 0) scale(1.5)`, transformOrigin: 'center' }}
+                loading="lazy"
+              />
+              <div className="absolute inset-0 bg-gradient-to-r from-black/55 via-black/20 to-black/0" />
+            </div>
+
+            <div className="relative mx-auto flex h-[260px] max-w-6xl items-center px-6 sm:h-[340px] lg:h-[420px]">
+              <div className="max-w-md rounded-2xl border border-white/25 bg-white/15 p-6 text-white shadow-lg backdrop-blur sm:p-8">
+                <p className="text-lg font-semibold leading-snug sm:text-xl">
+                  Explore all shops, from national favorites to local gems.
+                </p>
+                <div className="mt-5">
+                  <a
+                    href="#"
+                    className="inline-flex items-center justify-center rounded-full bg-palette-bronze px-5 py-2 text-sm font-semibold tracking-wide text-white hover:brightness-95"
+                  >
+                    View Directory
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="bg-white">
+          <div className="mx-auto max-w-6xl px-6 py-14">
+            <div className="grid gap-8 lg:grid-cols-12 lg:items-start">
+              <div className="lg:col-span-4">
+                <div className="text-xs font-semibold tracking-[0.25em] text-palette-darkCyan">MAP</div>
+                <h2 className="mt-2 text-3xl font-extrabold tracking-tight text-neutral-900">Find us</h2>
+                <div className="mt-4 h-1 w-16 rounded-full bg-palette-bronze" aria-hidden="true" />
+                <p className="mt-4 text-sm leading-7 text-neutral-800">
+                  Get directions to The Shops at Lake Havasu.
+                </p>
+              </div>
+
+              <div className="lg:col-span-8">
+                <div className="overflow-hidden rounded-2xl border border-neutral-200 shadow-sm">
+                  <div className="relative w-full h-[240px] sm:h-[280px] lg:h-[320px]">
+                    <iframe
+                      title="The Shops at Lake Havasu Map"
+                      className="absolute inset-0 h-full w-full"
+                      src="https://www.google.com/maps?q=The+Shops+at+Lake+Havasu&output=embed"
+                      loading="lazy"
+                      referrerPolicy="no-referrer-when-downgrade"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <footer className="border-t border-palette-darkCyan/15 bg-palette-darkCyan text-white">
+          <div className="mx-auto max-w-6xl px-6 py-12">
+            <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-12">
+              <div className="lg:col-span-5">
+                <div className="flex items-center gap-4">
+                  <div className="h-10 w-1 rounded-full bg-palette-bronze" aria-hidden="true" />
+                  <div className="leading-tight">
+                    <div className="text-sm font-extrabold tracking-[0.2em]">THE SHOPS</div>
+                    <div className="text-[11px] font-semibold tracking-[0.25em] text-white/85">AT LAKE HAVASU</div>
+                  </div>
+                </div>
+
+                <p className="mt-5 max-w-md text-sm leading-7 text-white/85">
+                  Open-air shopping, dining, and events in the heart of Lake Havasu City.
+                </p>
+              </div>
+
+              <div className="lg:col-span-4">
+                <div className="text-xs font-semibold tracking-[0.25em] text-white/85">QUICK LINKS</div>
+                <div className="mt-4 grid gap-2 text-sm font-semibold">
+                  <a className="text-white/85 hover:text-white" href="#">Home</a>
+                  <a className="text-white/85 hover:text-white" href="#">Stores</a>
+                  <a className="text-white/85 hover:text-white" href="#">Events</a>
+                  <a className="text-white/85 hover:text-white" href="#">Maps</a>
+                </div>
+              </div>
+
+              <div className="lg:col-span-3">
+                <div className="text-xs font-semibold tracking-[0.25em] text-white/85">CONTACT</div>
+                <div className="mt-4 space-y-2 text-sm text-white/85">
+                  <div>Lake Havasu City, AZ</div>
+                  <a className="block hover:text-white" href="#">(928) 000-0000</a>
+                  <a className="block hover:text-white" href="#">info@shopslakehavasu.com</a>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-10 flex flex-col gap-3 border-t border-white/15 pt-6 text-xs text-white/70 sm:flex-row sm:items-center sm:justify-between">
+              <div>© {new Date().getFullYear()} The Shops at Lake Havasu. All rights reserved.</div>
+              <div className="flex gap-5">
+                <a className="hover:text-white" href="#">Privacy</a>
+                <a className="hover:text-white" href="#">Terms</a>
+              </div>
+            </div>
+          </div>
+        </footer>
+      </main>
+    </div>
+  )
+}
