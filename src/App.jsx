@@ -6,6 +6,12 @@ import foodAndDrinksImg from './assets/images/food_and_drinks.jpg'
 import shopsImg from './assets/images/shops.jpg'
 import eventsAndOffersImg from './assets/images/events_and_offers.jpg'
 import stateParkImg from './assets/images/LAKE HAVASU STATE PARK.png'
+import lakeHavasuMedicalCenterImg from './assets/images/Lake Havasu Medical Center.jpg'
+import movie1Img from './assets/images/movies/1.webp'
+import movie2Img from './assets/images/movies/2.webp'
+import movie3Img from './assets/images/movies/3.jpg'
+import movie4Img from './assets/images/movies/4.png'
+import movie5Img from './assets/images/movies/5.webp'
 import altitudeLogo from './assets/images/logos/altitude.svg'
 import beallsLogo from './assets/images/logos/bealls.webp'
 import dillardsLogo from './assets/images/logos/dillards.svg'
@@ -15,7 +21,9 @@ import mauricesLogo from './assets/images/logos/maurices.svg'
 import petsmartLogo from './assets/images/logos/petsmart.png'
 import sallyLogo from './assets/images/logos/sally.webp'
 
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { Routes, Route, Link, useLocation } from 'react-router-dom';
+import Directory from './pages/Directory'
 
 const HERO_IMAGE = londonBridgeImg
 
@@ -112,7 +120,7 @@ function WeatherIcon({ type, className }) {
   )
 }
 
-export default function App() {
+function AppContent() {
   const typeWords = useMemo(() => ['shopping', 'fun', 'dining', 'movies', 'games'], [])
   const [wordIndex, setWordIndex] = useState(0)
   const [charIndex, setCharIndex] = useState(0)
@@ -145,6 +153,36 @@ export default function App() {
     ],
     [],
   )
+
+  const movieSlides = useMemo(
+    () => [
+      { title: 'Movie 1', image: movie1Img },
+      { title: 'Movie 2', image: movie2Img },
+      { title: 'Movie 3', image: movie3Img },
+      { title: 'Movie 4', image: movie4Img },
+      { title: 'Movie 5', image: movie5Img },
+    ],
+    [],
+  )
+
+  const [movieIndex, setMovieIndex] = useState(0)
+  const [isMoviePaused, setIsMoviePaused] = useState(false)
+
+  const goMoviePrev = () => {
+    setMovieIndex((i) => (i - 1 + movieSlides.length) % movieSlides.length)
+  }
+
+  const goMovieNext = () => {
+    setMovieIndex((i) => (i + 1) % movieSlides.length)
+  }
+
+  useEffect(() => {
+    if (isMoviePaused) return
+    const id = setInterval(() => {
+      setMovieIndex((i) => (i + 1) % movieSlides.length)
+    }, 1000)
+    return () => clearInterval(id)
+  }, [isMoviePaused, movieSlides.length])
 
   useEffect(() => {
     const currentWord = typeWords[wordIndex] ?? ''
@@ -258,6 +296,9 @@ export default function App() {
     }
   }, [])
 
+  const location = useLocation();
+  const isHome = location.pathname === '/';
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-palette-white via-palette-pearlAqua/30 to-palette-camel/20 text-neutral-900">
       <header className="relative isolate">
@@ -285,11 +326,11 @@ export default function App() {
                 </div>
               </div>
 
-              <nav className="hidden items-center gap-8 text-sm font-semibold tracking-wide md:flex">
-                <a className="hover:text-white/85" href="#">Home</a>
-                <a className="hover:text-white/85" href="#">Stores</a>
-                <a className="hover:text-white/85" href="#">Events</a>
-                <a className="hover:text-white/85" href="#">Maps</a>
+              <nav className="hidden items-center gap-8 text-base font-semibold tracking-wide md:flex">
+                <Link to="/" className={`${isHome ? 'text-white' : 'text-white/85 hover:text-white'}`}>Home</Link>
+                <Link to="/directory" className={`${location.pathname === '/directory' ? 'text-white' : 'text-white/85 hover:text-white'}`}>Directory</Link>
+                <a href="#" className="text-white/85 hover:text-white">Events</a>
+                <a href="#" className="text-white/85 hover:text-white">Maps</a>
                 <div className="flex items-center gap-2 rounded-full border border-white/35 bg-white/10 px-3 py-1 text-[12px] font-semibold tracking-wide text-white backdrop-blur">
                   <span className="text-white/80">Lake Havasu</span>
                   <span className="h-3 w-px bg-white/30" aria-hidden="true" />
@@ -328,7 +369,7 @@ export default function App() {
       </header>
 
       <main>
-        <section className="bg-palette-white">
+        {/* <section className="bg-palette-white">
           <div className="mx-auto max-w-6xl px-6 py-14">
             <div className="flex items-end justify-between gap-6">
               <div>
@@ -385,9 +426,337 @@ export default function App() {
               </a>
             </div>
           </div>
+        </section> */}
+
+        <section className="bg-palette-white">
+          <div className="mx-auto max-w-6xl px-6 py-14">
+            <div className="grid gap-6 lg:grid-cols-12">
+              <div className="lg:col-span-4">
+                <Link to="/directory" className="group relative isolate block overflow-hidden rounded-3xl">
+                  <img
+                    src={stateParkImg}
+                    alt="Directory"
+                    className="h-[300px] w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+                    loading="lazy"
+                  />
+
+                  <div className="absolute bottom-4 left-4 right-4">
+                    <div className="inline-block max-w-[85%] rounded-2xl bg-white px-4 py-3 text-sm font-semibold text-neutral-900 shadow-sm">
+                      View Directory
+                    </div>
+                  </div>
+                </Link>
+              </div>
+
+              <div className="lg:col-span-8">
+                <div className="grid gap-6 md:grid-cols-3">
+                  <a href="#" className="group relative isolate block overflow-hidden rounded-3xl">
+                    <img
+                      src={shopsImg}
+                      alt="Shops"
+                      className="h-[300px] w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+                      loading="lazy"
+                    />
+
+                    <div
+                      className="pointer-events-none absolute inset-0 origin-left scale-x-0 bg-[#EE9C2F]/90 transition-transform duration-500 ease-out group-hover:scale-x-100"
+                      aria-hidden="true"
+                    />
+
+                    <div
+                      className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-white/85 via-white/35 to-transparent transition-opacity duration-300 ease-out group-hover:opacity-0"
+                      aria-hidden="true"
+                    />
+
+                    <div className="pointer-events-none absolute bottom-4 left-4 z-10">
+                      <div className="inline-block max-w-[85%] text-4xl font-extrabold leading-none tracking-tight text-[#4B2D06] drop-shadow-[0_6px_14px_rgba(0,0,0,0.55)] transition-opacity duration-200 ease-out group-hover:opacity-0">
+                        SHOPS
+                      </div>
+                    </div>
+
+                    <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center text-center">
+                      <div className="text-6xl font-extrabold leading-none tracking-tight text-white opacity-0 scale-95 transition-[opacity,transform] duration-150 ease-out delay-0 group-hover:duration-300 group-hover:delay-150 group-hover:opacity-100 group-hover:scale-100">
+                        SHOPS
+                      </div>
+                    </div>
+                  </a>
+
+                  <a href="#" className="group relative isolate block overflow-hidden rounded-3xl">
+                    <img
+                      src={foodAndDrinksImg}
+                      alt="Food & Drinks"
+                      className="h-[300px] w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+                      loading="lazy"
+                    />
+
+                    <div
+                      className="pointer-events-none absolute inset-0 origin-left scale-x-0 bg-[#80AEB3]/90 transition-transform duration-500 ease-out group-hover:scale-x-100"
+                      aria-hidden="true"
+                    />
+
+                    <div
+                      className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-white/85 via-white/35 to-transparent transition-opacity duration-300 ease-out group-hover:opacity-0"
+                      aria-hidden="true"
+                    />
+
+                    <div className="pointer-events-none absolute bottom-4 left-4 z-10">
+                      <div className="inline-block max-w-[85%] text-4xl font-extrabold leading-none tracking-tight text-[#263E40] drop-shadow-[0_6px_14px_rgba(0,0,0,0.55)] transition-opacity duration-200 ease-out group-hover:opacity-0">
+                        FOOD & DRINKS
+                      </div>
+                    </div>
+
+                    <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center text-center">
+                      <div className="text-6xl font-extrabold leading-none tracking-tight text-white opacity-0 scale-95 transition-[opacity,transform] duration-150 ease-out delay-0 group-hover:duration-300 group-hover:delay-150 group-hover:opacity-100 group-hover:scale-100">
+                        FOOD & DRINKS
+                      </div>
+                    </div>
+                  </a>
+
+                  <a href="#" className="group relative isolate block overflow-hidden rounded-3xl">
+                    <img
+                      src={eventsAndOffersImg}
+                      alt="Events"
+                      className="h-[300px] w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+                      loading="lazy"
+                    />
+
+                    <div
+                      className="pointer-events-none absolute inset-0 origin-left scale-x-0 bg-[#7CA280]/90 transition-transform duration-500 ease-out group-hover:scale-x-100"
+                      aria-hidden="true"
+                    />
+
+                    <div
+                      className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-white/85 via-white/35 to-transparent transition-opacity duration-300 ease-out group-hover:opacity-0"
+                      aria-hidden="true"
+                    />
+
+                    <div className="pointer-events-none absolute bottom-4 left-4 z-10">
+                      <div className="inline-block max-w-[85%] text-4xl font-extrabold leading-none tracking-tight text-[#3B543E] drop-shadow-[0_6px_14px_rgba(0,0,0,0.55)] transition-opacity duration-200 ease-out group-hover:opacity-0">
+                        EVENTS
+                      </div>
+                    </div>
+
+                    <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center text-center">
+                      <div className="text-6xl font-extrabold leading-none tracking-tight text-white opacity-0 scale-95 transition-[opacity,transform] duration-150 ease-out delay-0 group-hover:duration-300 group-hover:delay-150 group-hover:opacity-100 group-hover:scale-100">
+                        EVENTS
+                      </div>
+                    </div>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
         </section>
 
-        <section className="bg-gradient-to-br from-palette-white via-palette-pearlAqua/45 to-palette-camel/35">
+        <div className="mx-auto h-px max-w-6xl bg-neutral-200/50" />
+
+        <section className="bg-palette-white">
+          <div className="mx-auto max-w-6xl px-6 py-14">
+            <div className="text-center">
+              <div className="text-xs font-semibold tracking-[0.25em] text-palette-bronze">STAR MOVIES</div>
+              <h2 className="mt-3 text-4xl font-extrabold tracking-tight text-neutral-900 sm:text-5xl">Curious what’s playing?</h2>
+              <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-neutral-700">
+                Check showtimes, discover new releases, and plan your next movie night at Star Movies.
+              </p>
+
+              <div className="mt-8">
+                <a
+                  href="https://starcinemashavasu.com/"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center justify-center rounded-full border border-neutral-300 bg-white px-6 py-2 text-sm font-semibold text-neutral-900 shadow-sm hover:bg-neutral-50"
+                >
+                  View showtimes
+                  <span className="ml-3 inline-flex h-7 w-7 items-center justify-center rounded-full bg-palette-bronze text-white" aria-hidden="true">→</span>
+                </a>
+              </div>
+            </div>
+
+            <div className="mt-12">
+              <div className="mx-auto max-w-5xl">
+              
+
+                <div className="relative mt-10" onMouseEnter={() => setIsMoviePaused(true)} onMouseLeave={() => setIsMoviePaused(false)}>
+                  <button
+                    type="button"
+                    onClick={goMovieNext}
+                    aria-label="Next"
+                    className="absolute right-0 top-1/2 z-10 translate-x-1/2 -translate-y-1/2 rounded-full bg-white/80 p-3 text-neutral-800 shadow-sm backdrop-blur hover:bg-white"
+                  >
+                    <span aria-hidden="true">›</span>
+                  </button>
+
+                  <div
+                    className="relative mx-auto h-[380px] w-full max-w-5xl"
+                    style={{ perspective: '1200px' }}
+                  >
+                    {movieSlides.map((slide, i) => {
+                      const len = movieSlides.length
+                      const dist = ((i - movieIndex) % len + len) % len
+
+                      let rel = 999
+                      if (dist <= 2) rel = dist
+                      else if (dist >= len - 2) rel = dist - len
+                      const absRel = Math.abs(rel)
+
+                      const isActive = rel === 0
+
+                      const translateX = rel * 180
+                      const scale = isActive ? 1 : absRel === 1 ? 0.88 : absRel === 2 ? 0.78 : 0.65
+                      const zIndex = isActive ? 40 : absRel === 1 ? 30 : absRel === 2 ? 20 : 0
+                      const rotateY = isActive ? 0 : rel < 0 ? 18 : -18
+
+                      const sizeClass = isActive
+                        ? 'h-[360px] w-[300px] shadow-2xl'
+                        : absRel === 1
+                          ? 'h-[320px] w-[260px] shadow-xl'
+                          : absRel === 2
+                            ? 'h-[300px] w-[240px] shadow-lg'
+                            : 'h-[280px] w-[220px]'
+
+                      const isVisible = absRel <= 2
+                      const transitionDuration = isVisible ? '900ms' : '0ms'
+
+                      return (
+                        <button
+                          key={slide.title}
+                          type="button"
+                          onClick={goMovieNext}
+                          className={`absolute left-1/2 top-1/2 overflow-hidden rounded-[28px] bg-white ${sizeClass}`}
+                          style={{
+                            transform: `translate3d(calc(-50% + ${translateX}px), -50%, 0) scale(${scale}) rotateY(${rotateY}deg)`,
+                            zIndex,
+                            pointerEvents: isVisible ? 'auto' : 'none',
+                            opacity: isVisible ? 1 : 0,
+                            transitionProperty: 'transform, opacity',
+                            transitionDuration,
+                            transitionTimingFunction: 'cubic-bezier(0.22, 1, 0.36, 1)',
+                            willChange: 'transform',
+                          }}
+                          aria-label={`Go to slide ${i + 1}`}
+                        >
+                          <img
+                            src={slide.image}
+                            alt={slide.title}
+                            className="h-full w-full object-cover"
+                            loading="lazy"
+                          />
+                        </button>
+                      )
+                    })}
+                  </div>
+
+                  <div className="mt-6 flex items-center justify-center gap-2">
+                    {movieSlides.map((_, i) => (
+                      <div
+                        key={i}
+                        aria-hidden="true"
+                        className={`h-1.5 rounded-full transition-all ${
+                          i === movieIndex ? 'w-10 bg-neutral-700' : 'w-4 bg-neutral-300'
+                        }`}
+                      />
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <div className="mx-auto h-px max-w-6xl bg-neutral-200/50" />
+
+        <section className="bg-palette-white">
+          <div className="mx-auto max-w-6xl px-6 py-14">
+            <div className="grid gap-10 lg:grid-cols-12 lg:items-stretch">
+              <div className="lg:col-span-5">
+                <div className="text-xs font-semibold tracking-[0.25em] text-palette-bronze">DISCOUNTS & OFFERS</div>
+                <h2 className="mt-3 text-3xl font-extrabold tracking-tight text-neutral-900 sm:text-4xl">Save more on your next visit</h2>
+                <p className="mt-4 text-sm leading-7 text-neutral-700">
+                  Explore limited-time deals, seasonal specials, and exclusive discounts from your favorite spots.
+                </p>
+
+                <div className="mt-8">
+                  <a
+                    href="#"
+                    className="inline-flex w-full items-center justify-center rounded-md bg-[rgb(128_174_179)] px-4 py-3 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-[rgb(238_156_47)]"
+                  >
+                    View Discounts & Offers
+                  </a>
+                </div>
+              </div>
+
+              <div className="lg:col-span-1 lg:self-stretch">
+                <div className="my-10 h-px w-full bg-neutral-300 lg:hidden" aria-hidden="true" />
+                <div className="hidden h-full w-px bg-neutral-200 lg:mx-auto lg:block" aria-hidden="true" />
+              </div>
+
+              <div className="lg:col-span-6">
+                <div className="text-xs font-semibold tracking-[0.25em] text-palette-bronze">SOCIAL MEDIA GALLERY</div>
+                <h3 className="mt-3 text-3xl font-extrabold tracking-tight text-neutral-900 sm:text-4xl">What’s happening now</h3>
+                <p className="mt-4 text-sm leading-7 text-neutral-700">A snapshot of moments, events, and favorites around the shops.</p>
+
+                <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                  {[shopsImg, foodAndDrinksImg, eventsAndOffersImg, stateParkImg, londonBridgeImg, hotAirBalloon].map((img, idx) => (
+                    <div key={idx} className="group relative isolate overflow-hidden rounded-2xl">
+                      <img
+                        src={img}
+                        alt="Social media"
+                        className="h-44 w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+                        loading="lazy"
+                      />
+                      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/35 via-black/10 to-transparent" aria-hidden="true" />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <div className="mx-auto h-px max-w-6xl bg-neutral-200/50" />
+
+        <section className="bg-palette-white">
+          <div className="mx-auto max-w-6xl px-6 py-14">
+            <div className="grid gap-6 lg:grid-cols-12">
+              <div className="lg:col-span-6">
+                <div className="group relative isolate overflow-hidden rounded-3xl border border-neutral-200 bg-white shadow-sm">
+                  <img
+                    src={lakeHavasuMedicalCenterImg}
+                    alt="Lake Havasu Medical Center"
+                    className="h-[340px] w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+                    loading="lazy"
+                  />
+                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent" aria-hidden="true" />
+                  <div className="absolute bottom-5 left-5 right-5">
+                    <div className="text-xs font-semibold tracking-[0.25em] text-white/90">LAKE HAVASU MEDICAL CENTER</div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="lg:col-span-6">
+                <div className="rounded-3xl border border-neutral-200 bg-white p-8 shadow-sm">
+                  <div className="text-xs font-semibold tracking-[0.25em] text-palette-bronze">CONVERGENCE HEALTH</div>
+                  <h3 className="mt-3 text-3xl font-extrabold tracking-tight text-neutral-900">
+                    Now Offering Outpatient Surgical Services – Explore Our Surgery Center
+                  </h3>
+
+                  <div className="mt-8">
+                    <a
+                      href="https://convergencehealth.com/"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex w-full items-center justify-center rounded-md bg-[rgb(128_174_179)] px-4 py-3 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-[rgb(238_156_47)]"
+                    >
+                      Visit Convergence Health
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* <section className="bg-gradient-to-br from-palette-white via-palette-pearlAqua/45 to-palette-camel/35">
           <div className="w-full px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
             <div className="grid gap-6 lg:grid-cols-3">
               {featureCards.map((card) => (
@@ -414,7 +783,7 @@ export default function App() {
               ))}
             </div>
           </div>
-        </section>
+        </section> */}
 
         {/*
         <section className="bg-palette-white">
@@ -444,7 +813,7 @@ export default function App() {
         </section>
         */}
 
-        <section className="relative isolate">
+        {/* <section className="relative isolate">
           <div
             className="relative h-[340px] w-full bg-palette-white sm:h-[420px] lg:h-[520px]"
           >
@@ -488,9 +857,9 @@ export default function App() {
               </div>
             </div>
           </div>
-        </section>
+        </section> */}
 
-        <section className="bg-white" ref={balloonSectionRef}>
+        {/* <section className="bg-white" ref={balloonSectionRef}>
           <div className="relative w-full overflow-hidden">
             <div className="absolute inset-0 bg-black">
               <img
@@ -503,7 +872,7 @@ export default function App() {
               <div className="absolute inset-0 bg-gradient-to-r from-black/55 via-black/20 to-black/0" />
             </div>
 
-            <div className="relative mx-auto flex h-[260px] max-w-6xl items-center px-6 sm:h-[340px] lg:h-[420px]">
+            <div className="relative mx-auto flex h-[360px] max-w-6xl items-center px-6 sm:h-[440px] lg:h-[520px]">
               <div className="max-w-md rounded-2xl border border-white/25 bg-white/15 p-6 text-white shadow-lg backdrop-blur sm:p-8">
                 <p className="text-lg font-semibold leading-snug sm:text-xl">
                   Explore all shops, from national favorites to local gems.
@@ -519,7 +888,7 @@ export default function App() {
               </div>
             </div>
           </div>
-        </section>
+        </section> */}
 
         <section className="bg-white">
           <div className="mx-auto max-w-6xl px-6 py-14">
@@ -550,7 +919,7 @@ export default function App() {
           </div>
         </section>
 
-        <footer className="border-t border-palette-darkCyan/15 bg-palette-darkCyan text-white">
+        <footer className="border-t border-palette-darkCyan/15 bg-[rgb(128_174_179)] text-white">
           <div className="mx-auto max-w-6xl px-6 py-12">
             <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-12">
               <div className="lg:col-span-5">
@@ -598,5 +967,14 @@ export default function App() {
         </footer>
       </main>
     </div>
+  )
+}
+
+export default function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<AppContent />} />
+      <Route path="/directory" element={<Directory />} />
+    </Routes>
   )
 }
