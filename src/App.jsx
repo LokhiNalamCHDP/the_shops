@@ -24,6 +24,9 @@ import sallyLogo from './assets/images/logos/sally.webp'
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Routes, Route, Link, useLocation } from 'react-router-dom';
 import Directory from './pages/Directory'
+import Maps from './pages/Maps'
+import Events from './pages/Events'
+import SiteHeader from './components/SiteHeader'
 
 const HERO_IMAGE = londonBridgeImg
 
@@ -308,49 +311,7 @@ function AppContent() {
         >
           <div className="absolute inset-0 bg-palette-darkCyan/25" />
 
-          <div className="absolute inset-x-0 top-0 z-10">
-            <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5 text-white">
-              <button
-                type="button"
-                aria-label="Open menu"
-                className="inline-flex h-10 w-10 items-center justify-center md:hidden"
-              >
-                <IconMenu className="h-6 w-6" />
-              </button>
-
-              <div className="flex items-center gap-4">
-                <div className="h-9 w-1 rounded-full bg-palette-bronze" aria-hidden="true" />
-                <div className="leading-tight">
-                  <div className="text-sm font-extrabold tracking-[0.2em]">THE SHOPS</div>
-                  <div className="text-[11px] font-semibold tracking-[0.25em] text-white/90">AT LAKE HAVASU</div>
-                </div>
-              </div>
-
-              <nav className="hidden items-center gap-8 text-base font-semibold tracking-wide md:flex">
-                <Link to="/" className={`${isHome ? 'text-white' : 'text-white/85 hover:text-white'}`}>Home</Link>
-                <Link to="/directory" className={`${location.pathname === '/directory' ? 'text-white' : 'text-white/85 hover:text-white'}`}>Directory</Link>
-                <a href="#" className="text-white/85 hover:text-white">Events</a>
-                <a href="#" className="text-white/85 hover:text-white">Maps</a>
-                <div className="flex items-center gap-2 rounded-full border border-white/35 bg-white/10 px-3 py-1 text-[12px] font-semibold tracking-wide text-white backdrop-blur">
-                  <span className="text-white/80">Lake Havasu</span>
-                  <span className="h-3 w-px bg-white/30" aria-hidden="true" />
-                  {weather.status === 'ready' && typeof weather.tempF === 'number' ? (
-                    <span className="inline-flex items-center gap-1">
-                      <WeatherIcon type={getWeatherIconTypeFromCode(weather.code)} className="h-4 w-4 text-white/90" />
-                      <span>{Math.round(weather.tempF)}°F</span>
-                    </span>
-                  ) : weather.status === 'error' ? (
-                    <span className="text-white/80">Weather unavailable</span>
-                  ) : (
-                    <span className="text-white/80">Loading…</span>
-                  )}
-                  {weather.status === 'ready' && weather.label ? (
-                    <span className="hidden lg:inline text-white/80">{weather.label}</span>
-                  ) : null}
-                </div>
-              </nav>
-            </div>
-          </div>
+          <SiteHeader variant="overlay" />
 
           <div className="relative z-0 flex h-full items-center">
             <div className="mx-auto w-full max-w-6xl px-6">
@@ -692,7 +653,16 @@ function AppContent() {
 
               <div className="lg:col-span-6">
                 <div className="text-xs font-semibold tracking-[0.25em] text-palette-bronze">SOCIAL MEDIA GALLERY</div>
-                <h3 className="mt-3 text-3xl font-extrabold tracking-tight text-neutral-900 sm:text-4xl">What’s happening now</h3>
+                <div className="mt-3 flex items-center justify-between gap-4">
+                  <h3 className="text-3xl font-extrabold tracking-tight text-neutral-900 sm:text-4xl">What’s happening now</h3>
+                  <Link
+                    to="/events"
+                    aria-label="View events"
+                    className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-neutral-200 bg-white text-lg font-semibold text-neutral-900 shadow-sm transition-colors hover:bg-neutral-50"
+                  >
+                    →
+                  </Link>
+                </div>
                 <p className="mt-4 text-sm leading-7 text-neutral-700">A snapshot of moments, events, and favorites around the shops.</p>
 
                 <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -975,6 +945,8 @@ export default function App() {
     <Routes>
       <Route path="/" element={<AppContent />} />
       <Route path="/directory" element={<Directory />} />
+      <Route path="/events" element={<Events />} />
+      <Route path="/maps" element={<Maps />} />
     </Routes>
   )
 }

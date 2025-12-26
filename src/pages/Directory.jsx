@@ -1,35 +1,95 @@
-import React from 'react';
+import React, { useMemo } from 'react';
+import directoryCsv from '../assets/Directory.csv?raw'
+import SiteHeader from '../components/SiteHeader'
 
 const Directory = () => {
-  // Sample store data - replace with your actual data
-  const stores = [
-    { id: 1, name: 'Altitude', category: 'Fashion', description: 'Trendy clothing and accessories' },
-    { id: 2, name: "Beall's", category: 'Department', description: 'Family fashion and home decor' },
-    { id: 3, name: "Dillard's", category: 'Department', description: 'Upscale fashion and home goods' },
-    { id: 4, name: 'Great Clips', category: 'Services', description: 'Hair care and styling' },
-    { id: 5, name: "JCPenney", category: 'Department', description: 'Apparel, home, and beauty' },
-    { id: 6, name: "Maurice's", category: 'Fashion', description: "Women's fashion and accessories" },
-    { id: 7, name: 'PetSmart', category: 'Pets', description: 'Pet supplies and services' },
-    { id: 8, name: 'Sally Beauty', category: 'Beauty', description: 'Professional beauty supplies' }
-  ];
+  const stores = useMemo(() => {
+    const slugify = (value) =>
+      String(value ?? '')
+        .trim()
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/(^-|-$)/g, '')
+
+    const parseCsvLine = (line) => {
+      const out = []
+      let current = ''
+      let inQuotes = false
+
+      for (let i = 0; i < line.length; i += 1) {
+        const ch = line[i]
+        if (ch === '"') {
+          inQuotes = !inQuotes
+          continue
+        }
+        if (ch === ',' && !inQuotes) {
+          out.push(current)
+          current = ''
+          continue
+        }
+        current += ch
+      }
+
+      out.push(current)
+      return out.map((v) => String(v ?? '').trim())
+    }
+
+    const normHeader = (h) => String(h ?? '').trim().toLowerCase()
+
+    const parse = (csvText) => {
+      const lines = String(csvText ?? '')
+        .split(/\r?\n/)
+        .map((l) => l.trim())
+        .filter(Boolean)
+
+      if (lines.length === 0) return []
+
+      const headers = parseCsvLine(lines[0]).map(normHeader)
+
+      const idx = {
+        name: headers.indexOf('store'),
+        url: headers.indexOf('google maps link') !== -1 ? headers.indexOf('google maps link') : headers.indexOf('google maps'),
+        phone: headers.indexOf('phone') !== -1 ? headers.indexOf('phone') : headers.indexOf('contact'),
+        hours: headers.indexOf('hours'),
+        category: headers.indexOf('category'),
+        description: headers.indexOf('description'),
+      }
+
+      return lines
+        .slice(1)
+        .map((line) => {
+          const cells = parseCsvLine(line)
+          const name = (cells[idx.name] ?? '').trim()
+          const placeUrl = (cells[idx.url] ?? '').trim()
+          const phone = (idx.phone >= 0 ? (cells[idx.phone] ?? '').trim() : '')
+          const hours = (idx.hours >= 0 ? (cells[idx.hours] ?? '').trim() : '')
+          const category = (idx.category >= 0 ? (cells[idx.category] ?? '').trim() : '')
+          const description = (idx.description >= 0 ? (cells[idx.description] ?? '').trim() : '')
+
+          if (!name) return null
+
+          return {
+            id: slugify(name) || name,
+            name,
+            category: category || 'Store',
+            description: description || '',
+            placeUrl,
+            phone: phone || '',
+            hours: hours || '',
+          }
+        })
+        .filter(Boolean)
+    }
+
+    return parse(directoryCsv)
+  }, [])
 
   // Get unique categories
   const categories = [...new Set(stores.map(store => store.category))];
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Header */}
-      <header className="bg-palette-darkCyan text-white">
-        <div className="mx-auto max-w-7xl px-6 py-5">
-          <div className="flex items-center gap-4">
-            <div className="h-10 w-1 rounded-full bg-palette-bronze" aria-hidden="true" />
-            <div className="leading-tight">
-              <h1 className="text-2xl font-extrabold tracking-[0.2em]">STORE DIRECTORY</h1>
-              <p className="text-sm font-semibold tracking-[0.25em] text-white/85">FIND YOUR FAVORITE STORES</p>
-            </div>
-          </div>
-        </div>
-      </header>
+      <SiteHeader />
 
       <main className="mx-auto max-w-7xl px-6 py-12">
         {/* Search and Filter */}
@@ -120,6 +180,9 @@ const Directory = () => {
                   </button>
                 </div>
                 <p className="mt-2 text-sm text-gray-600">{store.description}</p>
+                {store.phone ? (
+                  <div className="mt-2 text-sm font-medium text-gray-700">{store.phone}</div>
+                ) : null}
                 <div className="mt-4 flex items-center justify-between">
                   <span className="text-sm font-medium text-palette-bronze">View Details</span>
                   <div className="flex space-x-1">
