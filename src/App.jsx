@@ -1,4 +1,5 @@
 import londonBridgeImg from './assets/images/london-bridge.jpg'
+import shopsbg from './assets/images/shopsbg.png'
 import hotAirBalloon from './assets/images/hotairballoon.jpg'
 import hotAirBalloonOnWater from './assets/images/hotairballoononwater.jpg'
 import qwe from './assets/images/qwe.jpg'
@@ -29,7 +30,7 @@ import Events from './pages/Events'
 import SiteHeader from './components/SiteHeader'
 import SiteFooter from './components/SiteFooter'
 
-const HERO_IMAGE = londonBridgeImg
+const HERO_IMAGE = shopsbg
 
 function IconMenu(props) {
   return (
@@ -360,9 +361,14 @@ function AppContent() {
     <div className="min-h-screen bg-gradient-to-b from-palette-white via-palette-pearlAqua/30 to-palette-camel/20 text-neutral-900">
       <header className="relative isolate">
         <div
-          className="relative h-[62vh] min-h-[420px] w-full bg-cover bg-center"
+          className="relative h-[75vh] min-h-[520px] w-full bg-cover bg-center"
           style={{ backgroundImage: `url(${HERO_IMAGE})` }}
         >
+          <div
+            className="pointer-events-none absolute inset-x-0 top-0 z-10 h-20 bg-gradient-to-b from-palette-white/60 via-palette-white/10 to-transparent backdrop-blur-sm"
+            aria-hidden="true"
+          />
+          <div className="absolute inset-0 bg-black/10" aria-hidden="true" />
           <div className="absolute inset-0 bg-palette-darkCyan/25" />
 
           <SiteHeader variant="overlay" />
@@ -372,7 +378,7 @@ function AppContent() {
               <div className="max-w-3xl">
                 <h1 className="text-5xl font-extrabold tracking-tight text-white drop-shadow md:text-6xl">
                   This is where havasu comes for{' '}
-                  <span className="text-[rgb(167_241_247_/_0.9)]">
+                  <span className="text-[rgb(77_137_142_/_0.9)]">
                     {typedText}
                     <span className="inline-block w-[0.6ch] -translate-y-[0.06em] animate-pulse text-[rgb(133_195_200_/_0.95)]">|</span>
                   </span>
@@ -473,18 +479,12 @@ function AppContent() {
                     />
 
                     <div
-                      className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-white/85 via-white/35 to-transparent transition-opacity duration-300 ease-out group-hover:opacity-0"
-                      aria-hidden="true"
-                    />
-
-                    <div className="pointer-events-none absolute bottom-4 left-4 z-10">
-                      <div className="inline-block max-w-[85%] text-4xl font-extrabold leading-none tracking-tight text-[#4B2D06] drop-shadow-[0_6px_14px_rgba(0,0,0,0.55)] transition-opacity duration-200 ease-out group-hover:opacity-0">
+                      className="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex min-h-[104px] items-center justify-between gap-4 rounded-b-3xl bg-gradient-to-t from-black/25 via-black/10 to-transparent px-4 py-4 backdrop-blur-sm transition-opacity duration-200 ease-out before:absolute before:inset-x-0 before:-top-6 before:h-6 before:bg-gradient-to-t before:from-black/20 before:to-transparent before:backdrop-blur-sm before:content-[''] group-hover:opacity-0"
+                    >
+                      <div className="max-w-[85%] text-4xl font-extrabold leading-none tracking-tight text-white drop-shadow-[0_6px_14px_rgba(0,0,0,0.55)]">
                         SHOPS
                       </div>
-                    </div>
-
-                    <div className="pointer-events-none absolute bottom-4 right-4 z-10">
-                      <span className="text-5xl font-black leading-none text-[#4B2D06] drop-shadow-[0_6px_14px_rgba(0,0,0,0.55)] transition-opacity duration-200 ease-out group-hover:opacity-0" aria-hidden="true">
+                      <span className="text-5xl font-black leading-none text-white drop-shadow-[0_6px_14px_rgba(0,0,0,0.55)]" aria-hidden="true">
                         →
                       </span>
                     </div>
@@ -510,18 +510,12 @@ function AppContent() {
                     />
 
                     <div
-                      className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-white/85 via-white/35 to-transparent transition-opacity duration-300 ease-out group-hover:opacity-0"
-                      aria-hidden="true"
-                    />
-
-                    <div className="pointer-events-none absolute bottom-4 left-4 z-10">
-                      <div className="inline-block max-w-[85%] text-4xl font-extrabold leading-none tracking-tight text-[#263E40] drop-shadow-[0_6px_14px_rgba(0,0,0,0.55)] transition-opacity duration-200 ease-out group-hover:opacity-0">
+                      className="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex items-center justify-between gap-4 rounded-b-3xl bg-gradient-to-t from-black/25 via-black/10 to-transparent px-4 py-4 backdrop-blur-sm transition-opacity duration-200 ease-out before:absolute before:inset-x-0 before:-top-6 before:h-6 before:bg-gradient-to-t before:from-black/20 before:to-transparent before:backdrop-blur-sm before:content-[''] group-hover:opacity-0"
+                    >
+                      <div className="max-w-[85%] text-4xl font-extrabold leading-none tracking-tight text-white drop-shadow-[0_6px_14px_rgba(0,0,0,0.55)]">
                         FOOD & DRINKS
                       </div>
-                    </div>
-
-                    <div className="pointer-events-none absolute bottom-4 right-4 z-10">
-                      <span className="text-5xl font-black leading-none text-[#263E40] drop-shadow-[0_6px_14px_rgba(0,0,0,0.55)] transition-opacity duration-200 ease-out group-hover:opacity-0" aria-hidden="true">
+                      <span className="text-5xl font-black leading-none text-white drop-shadow-[0_6px_14px_rgba(0,0,0,0.55)]" aria-hidden="true">
                         →
                       </span>
                     </div>
@@ -547,18 +541,12 @@ function AppContent() {
                     />
 
                     <div
-                      className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-white/85 via-white/35 to-transparent transition-opacity duration-300 ease-out group-hover:opacity-0"
-                      aria-hidden="true"
-                    />
-
-                    <div className="pointer-events-none absolute bottom-4 left-4 z-10">
-                      <div className="inline-block max-w-[85%] text-4xl font-extrabold leading-none tracking-tight text-[#3B543E] drop-shadow-[0_6px_14px_rgba(0,0,0,0.55)] transition-opacity duration-200 ease-out group-hover:opacity-0">
+                      className="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex min-h-[104px] items-center justify-between gap-4 rounded-b-3xl bg-gradient-to-t from-black/25 via-black/10 to-transparent px-4 py-4 backdrop-blur-sm transition-opacity duration-200 ease-out before:absolute before:inset-x-0 before:-top-6 before:h-6 before:bg-gradient-to-t before:from-black/20 before:to-transparent before:backdrop-blur-sm before:content-[''] group-hover:opacity-0"
+                    >
+                      <div className="max-w-[85%] text-4xl font-extrabold leading-none tracking-tight text-white drop-shadow-[0_6px_14px_rgba(0,0,0,0.55)]">
                         EVENTS
                       </div>
-                    </div>
-
-                    <div className="pointer-events-none absolute bottom-4 right-4 z-10">
-                      <span className="text-5xl font-black leading-none text-[#3B543E] drop-shadow-[0_6px_14px_rgba(0,0,0,0.55)] transition-opacity duration-200 ease-out group-hover:opacity-0" aria-hidden="true">
+                      <span className="text-5xl font-black leading-none text-white drop-shadow-[0_6px_14px_rgba(0,0,0,0.55)]" aria-hidden="true">
                         →
                       </span>
                     </div>
