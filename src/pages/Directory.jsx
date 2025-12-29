@@ -1,8 +1,116 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
+import { useLocation } from 'react-router-dom'
 import directoryCsv from '../assets/Directory.csv?raw'
 import SiteHeader from '../components/SiteHeader'
+import altitudeLogo from '../assets/images/logos/altitude.png'
+import beallsLogo from '../assets/images/logos/bealls.webp'
+import buffaloWildWingsLogo from '../assets/images/logos/buffalowildwings.png'
+import convergenceHealthLogo from '../assets/images/logos/convergencehealth.png'
+import dillardsLogo from '../assets/images/logos/dillards.png'
+import dollarTreeLogo from '../assets/images/logos/dollartree.webp'
+import famousFootwearLogo from '../assets/images/logos/famousfootwearlogo.png'
+import frozenSpoonLogo from '../assets/images/logos/frozenspoon.webp'
+import gameStopLogo from '../assets/images/logos/gamestop.png'
+import greatClipsLogo from '../assets/images/logos/greatclips.png'
+import jcpenneyLogo from '../assets/images/logos/jcpenney.png'
+import kayJewelersLogo from '../assets/images/logos/kayjewellers.png'
+import mauricesLogo from '../assets/images/logos/maurices.webp'
+import northsideGrillLogo from '../assets/images/logos/northsidegrill.png'
+import petsmartLogo from '../assets/images/logos/petsmart.png'
+import sallyLogo from '../assets/images/logos/sally.webp'
+import sunshineIndoorPlayLogo from '../assets/images/logos/sunshineindoorplay.png'
+import tmobileLogo from '../assets/images/logos/tmobile.png'
+import SiteFooter from '../components/SiteFooter'
 
 const Directory = () => {
+  const location = useLocation()
+
+  const categoryOptions = useMemo(
+    () => [
+      { id: 'all', label: 'All stores' },
+      { id: 'Dining', label: 'Dining' },
+      { id: 'Shopping', label: 'Shopping' },
+      { id: 'Entertainment', label: 'Entertainment' },
+      { id: 'Healthcare', label: 'Healthcare' },
+      { id: 'Services', label: 'Services' },
+    ],
+    [],
+  )
+
+  const websiteByStoreId = useMemo(
+    () => ({
+      'altitude-trampoline-park': 'https://www.altitudetrampolinepark.com/locations/arizona/lake-havasu-city/5601-highway-95-n/',
+      'bealls': 'https://stores.bealls.com/az/lake-havasu/5601-highway-95-n',
+      'buffalo-wild-wings': 'https://www.buffalowildwings.com/locations/us/az/lake-havasu-city/',
+      'convergence-health': 'https://convergencehealth.com/locations/lake-havasu',
+      'dillard-s': 'https://www.dillards.com/stores/arizona/the-shops-at-lake-havasu-lake-havasu-city/0912',
+      'dollar-tree': 'https://locations.dollartree.com/az/lake-havasu/5601-highway-95-n',
+      'famous-footwear': 'https://www.famousfootwear.com/stores/az/lake-havasu/86404/the-shops-at-lake-havasu-02753',
+      'frozen-spoon': 'https://frozenspoonyogurt.com/contact-us',
+      'gamestop': 'https://www.gamestop.com/store/us/az/lake-havasu-city/6128/shops-at-lake-havasu-gamestop',
+      'great-clips': 'https://salons.greatclips.com/us/az/lake-havasu/5601-hwy-95-n',
+      'jcpenny': 'https://www.jcpenney.com/locations/az/lakehavasucity/clothing-stores-lakehavasucity-az-2940.html',
+      'kay-jewelers': 'https://stores.kay.com/az/lake-havasu-city/2826',
+      'maurices': 'https://locations.maurices.com/us/az/lake-havasu-city/5601-hwy-95-n',
+      'northside-grill': 'https://www.facebook.com/p/Northside-Grill-100092231486833/',
+      'petsmart': 'https://www.petsmart.com/stores/us/az/lake-havasu-city-store1902.html',
+      'sally-beauty': 'https://stores.sallybeauty.com/az/lkhavasucity/beauty-supply-lkhavasucity-az-3690.html',
+      'star-cinemas': 'https://starcinemashavasu.com/',
+      'sunshine-indoor-play': 'https://www.sunshineindoorplay.com/',
+      't-mobile': 'https://www.t-mobile.com/stores/bd/t-mobile-lake-havasu-city-az-86404-464g',
+    }),
+    [],
+  )
+
+  const logoByStoreId = useMemo(
+    () => ({
+      altitude: altitudeLogo,
+      'altitude-trampoline-park': altitudeLogo,
+      "bealls": beallsLogo,
+      'buffalo-wild-wings': buffaloWildWingsLogo,
+      'convergence-health': convergenceHealthLogo,
+      "dillards": dillardsLogo,
+      "dillard-s": dillardsLogo,
+      'dollar-tree': dollarTreeLogo,
+      'famous-footwear': famousFootwearLogo,
+      'frozen-spoon': frozenSpoonLogo,
+      'gamestop': gameStopLogo,
+      "greatclips": greatClipsLogo,
+      'great-clips': greatClipsLogo,
+      "jcpenney": jcpenneyLogo,
+      'jcpenny': jcpenneyLogo,
+      'kay-jewelers': kayJewelersLogo,
+      "maurices": mauricesLogo,
+      'northside-grill': northsideGrillLogo,
+      "petsmart": petsmartLogo,
+      "sally": sallyLogo,
+      'sally-beauty': sallyLogo,
+      'sunshine-indoor-play': sunshineIndoorPlayLogo,
+      't-mobile': tmobileLogo,
+    }),
+    [],
+  )
+
+  const normalizedCategoryByStoreId = useMemo(
+    () => ({
+      'buffalo-wild-wings': 'Dining',
+      'northside-grill': 'Dining',
+      'frozen-spoon': 'Dining',
+
+      'altitude-trampoline-park': 'Entertainment',
+      'sunshine-indoor-play': 'Services',
+      'star-cinemas': 'Entertainment',
+
+      'convergence-health': 'Healthcare',
+
+      'great-clips': 'Services',
+      't-mobile': 'Services',
+
+      // Everything else defaults to Shopping
+    }),
+    [],
+  )
+
   const stores = useMemo(() => {
     const slugify = (value) =>
       String(value ?? '')
@@ -68,10 +176,25 @@ const Directory = () => {
 
           if (!name) return null
 
+          const normalizeCategory = (rawCategory, storeId) => {
+            const raw = String(rawCategory ?? '').trim().toLowerCase()
+            if (raw) {
+              if (raw.includes('dining') || raw.includes('food')) return 'Dining'
+              if (raw.includes('entertain')) return 'Entertainment'
+              if (raw.includes('health')) return 'Healthcare'
+              if (raw.includes('service')) return 'Services'
+              if (raw.includes('shop')) return 'Shopping'
+            }
+            return normalizedCategoryByStoreId[storeId] || 'Shopping'
+          }
+
+          const id = slugify(name) || name
+          const normalizedCategory = normalizeCategory(category, id)
+
           return {
-            id: slugify(name) || name,
+            id,
             name,
-            category: category || 'Store',
+            category: normalizedCategory,
             description: description || '',
             placeUrl,
             phone: phone || '',
@@ -82,113 +205,141 @@ const Directory = () => {
     }
 
     return parse(directoryCsv)
-  }, [])
+  }, [normalizedCategoryByStoreId])
 
-  // Get unique categories
-  const categories = [...new Set(stores.map(store => store.category))];
+  const initialCategoryFromUrl = useMemo(() => {
+    const params = new URLSearchParams(location.search)
+    const raw = (params.get('category') ?? '').trim()
+    if (!raw) return 'all'
+    const found = categoryOptions.find((c) => String(c.id).toLowerCase() === raw.toLowerCase())
+    return found ? found.id : 'all'
+  }, [categoryOptions, location.search])
+
+  const [activeCategory, setActiveCategory] = useState(initialCategoryFromUrl)
+  const [query, setQuery] = useState('')
+
+  useEffect(() => {
+    setActiveCategory(initialCategoryFromUrl)
+  }, [initialCategoryFromUrl])
+
+  const filteredStores = useMemo(() => {
+    const q = query.trim().toLowerCase()
+
+    return stores
+      .filter((store) => {
+        if (activeCategory !== 'all' && store.category !== activeCategory) return false
+        if (!q) return true
+
+        const haystack = [store.name, store.category, store.description, store.phone, store.hours]
+          .filter(Boolean)
+          .join(' ')
+          .toLowerCase()
+        return haystack.includes(q)
+      })
+      .slice()
+      .sort((a, b) => a.name.localeCompare(b.name))
+  }, [activeCategory, query, stores])
 
   return (
     <div className="min-h-screen bg-white">
       <SiteHeader />
 
       <main className="mx-auto max-w-7xl px-6 py-12">
-        {/* Search and Filter */}
-        <div className="mb-12">
-          <div className="relative">
-            <input
-              type="text"
-              placeholder="Search stores..."
-              className="w-full rounded-lg border border-gray-300 px-4 py-3 pl-10 focus:border-palette-bronze focus:outline-none focus:ring-1 focus:ring-palette-bronze"
-            />
-            <svg
-              className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+        <div className="mb-10">
+          <h1 className="text-4xl font-extrabold tracking-tight text-neutral-900">Our All Stores</h1>
+          <p className="mt-2 max-w-xl text-sm font-semibold leading-6 text-neutral-700">
+            Click a store to view store hours.
+          </p>
+
+          <div className="mt-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex flex-wrap gap-2">
+              {categoryOptions.map((opt) => (
+                <button
+                  key={opt.id}
+                  type="button"
+                  onClick={() => setActiveCategory(opt.id)}
+                  className={`rounded-full border px-4 py-1.5 text-xs font-semibold transition-colors ${
+                    activeCategory === opt.id
+                      ? 'border-[rgb(128_174_179)] bg-[rgb(128_174_179)] text-white'
+                      : 'border-neutral-300 bg-white text-neutral-700 hover:border-[rgb(128_174_179)]'
+                  }`}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+
+            <div className="relative w-full sm:w-[320px]">
+              <input
+                type="text"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search stores..."
+                className="w-full rounded-full border border-neutral-300 bg-white px-4 py-2 pl-10 text-sm text-neutral-900 placeholder:text-neutral-400 focus:border-neutral-900 focus:outline-none"
               />
-            </svg>
-          </div>
-          
-          <div className="mt-4 flex flex-wrap gap-2">
-            <button className="rounded-full bg-palette-bronze px-4 py-1.5 text-xs font-medium text-white">
-              All Stores
-            </button>
-            {categories.map((category) => (
-              <button
-                key={category}
-                className="rounded-full bg-gray-100 px-4 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-200"
+              <svg
+                className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
               >
-                {category}
-              </button>
-            ))}
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
+              </svg>
+            </div>
           </div>
         </div>
 
-        {/* Stores Grid */}
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {stores.map((store) => (
-            <div key={store.id} className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm transition-all hover:shadow-md">
-              <div className="h-40 bg-gray-100">
-                {/* Store image placeholder */}
-                <div className="flex h-full items-center justify-center bg-gray-100 text-gray-400">
-                  <svg
-                    className="h-12 w-12"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {filteredStores.map((store) => (
+            <div key={store.id} className="rounded-2xl border border-neutral-200 bg-white shadow-sm">
+              <a
+                href={websiteByStoreId[store.id] || undefined}
+                target={websiteByStoreId[store.id] ? '_blank' : undefined}
+                rel={websiteByStoreId[store.id] ? 'noreferrer' : undefined}
+                className="m-4 flex h-44 items-center justify-center rounded-2xl bg-white"
+              >
+                {logoByStoreId[store.id] ? (
+                  <img
+                    src={logoByStoreId[store.id]}
+                    alt={store.name}
+                    className="h-40 w-40 object-contain"
+                    loading="lazy"
+                  />
+                ) : (
+                  <svg className="h-14 w-14 text-neutral-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
-                      strokeWidth={1}
-                      d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+                      strokeWidth={1.5}
+                      d="M4 16l4-4a3 5 0 014 0l4 4m-8-6l2-2a3 5 0 014 0l4 4M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
                     />
                   </svg>
-                </div>
-              </div>
-              <div className="p-4">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-900">{store.name}</h3>
-                    <span className="mt-1 inline-block rounded-full bg-palette-pearlAqua/20 px-2.5 py-0.5 text-xs font-medium text-palette-pearlAqua">
-                      {store.category}
-                    </span>
-                  </div>
-                  <button className="rounded-full p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-500">
-                    <svg
-                      className="h-5 w-5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"
-                      />
-                    </svg>
-                  </button>
-                </div>
-                <p className="mt-2 text-sm text-gray-600">{store.description}</p>
-                {store.phone ? (
-                  <div className="mt-2 text-sm font-medium text-gray-700">{store.phone}</div>
-                ) : null}
-                <div className="mt-4 flex items-center justify-between">
-                  <span className="text-sm font-medium text-palette-bronze">View Details</span>
-                  <div className="flex space-x-1">
-                    <span className="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">
-                      Open
-                    </span>
+                )}
+              </a>
+
+              <div className="mx-4 h-px bg-neutral-200" aria-hidden="true" />
+
+              <div className="px-5 py-6">
+                <div className="flex items-start justify-between gap-4">
+                  <div className="min-w-0">
+                    {websiteByStoreId[store.id] ? (
+                      <a
+                        href={websiteByStoreId[store.id]}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="block truncate text-base font-semibold text-neutral-900 hover:underline"
+                      >
+                        {store.name}
+                      </a>
+                    ) : (
+                      <div className="truncate text-base font-semibold text-neutral-900">{store.name}</div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -197,23 +348,7 @@ const Directory = () => {
         </div>
       </main>
 
-      {/* Footer */}
-      <footer className="bg-neutral-900 text-white">
-        <div className="mx-auto max-w-7xl px-6 py-12">
-          <div className="flex flex-col items-center justify-between md:flex-row">
-            <div className="flex items-center gap-4">
-              <div className="h-10 w-1 rounded-full bg-palette-bronze" aria-hidden="true" />
-              <div className="leading-tight">
-                <div className="text-sm font-extrabold tracking-[0.2em]">THE SHOPS</div>
-                <div className="text-[11px] font-semibold tracking-[0.25em] text-white/85">AT LAKE HAVASU</div>
-              </div>
-            </div>
-            <div className="mt-4 text-sm text-neutral-400 md:mt-0">
-              &copy; {new Date().getFullYear()} The Shops at Lake Havasu. All rights reserved.
-            </div>
-          </div>
-        </div>
-      </footer>
+      <SiteFooter />
     </div>
   );
 };

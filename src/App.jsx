@@ -12,12 +12,12 @@ import movie2Img from './assets/images/movies/2.webp'
 import movie3Img from './assets/images/movies/3.jpg'
 import movie4Img from './assets/images/movies/4.png'
 import movie5Img from './assets/images/movies/5.webp'
-import altitudeLogo from './assets/images/logos/altitude.svg'
+import altitudeLogo from './assets/images/logos/altitude.png'
 import beallsLogo from './assets/images/logos/bealls.webp'
-import dillardsLogo from './assets/images/logos/dillards.svg'
+import dillardsLogo from './assets/images/logos/dillards.png'
 import greatClipsLogo from './assets/images/logos/greatclips.png'
 import jcpenneyLogo from './assets/images/logos/jcpenney.png'
-import mauricesLogo from './assets/images/logos/maurices.svg'
+import mauricesLogo from './assets/images/logos/maurices.webp'
 import petsmartLogo from './assets/images/logos/petsmart.png'
 import sallyLogo from './assets/images/logos/sally.webp'
 
@@ -27,6 +27,7 @@ import Directory from './pages/Directory'
 import Maps from './pages/Maps'
 import Events from './pages/Events'
 import SiteHeader from './components/SiteHeader'
+import SiteFooter from './components/SiteFooter'
 
 const HERO_IMAGE = londonBridgeImg
 
@@ -129,6 +130,13 @@ function AppContent() {
   const [charIndex, setCharIndex] = useState(0)
   const [isDeleting, setIsDeleting] = useState(false)
 
+  const [feedbackName, setFeedbackName] = useState('')
+  const [feedbackEmail, setFeedbackEmail] = useState('')
+  const [feedbackMessage, setFeedbackMessage] = useState('')
+  const [feedbackError, setFeedbackError] = useState('')
+  const [feedbackSuccess, setFeedbackSuccess] = useState('')
+  const [feedbackSubmitting, setFeedbackSubmitting] = useState(false)
+
   const [weather, setWeather] = useState({ status: 'loading', tempF: null, label: '', code: null })
 
   const balloonSectionRef = useRef(null)
@@ -170,6 +178,52 @@ function AppContent() {
 
   const [movieIndex, setMovieIndex] = useState(0)
   const [isMoviePaused, setIsMoviePaused] = useState(false)
+
+  const sendFeedback = async () => {
+    const name = feedbackName.trim()
+    const email = feedbackEmail.trim()
+    const message = feedbackMessage.trim()
+
+    if (!message) {
+      setFeedbackSuccess('')
+      setFeedbackError('Please enter your feedback message.')
+      return
+    }
+
+    setFeedbackError('')
+    setFeedbackSuccess('')
+    setFeedbackSubmitting(true)
+
+    try {
+      const res = await fetch('https://script.google.com/macros/s/AKfycbxbE6lPp30mGPgdI_oZfZGWpNdUG5xJgSi1r2bw6tH81QVQWHi2epUk2b40swVFbS7muw/exec', {
+        method: 'POST',
+        body: JSON.stringify({ name, email, message }),
+      })
+
+      const text = await res.text().catch(() => '')
+      const json = (() => {
+        if (!text) return null
+        try {
+          return JSON.parse(text)
+        } catch {
+          return null
+        }
+      })()
+
+      if (!res.ok) throw new Error(json?.error || `Request failed (${res.status})`)
+
+      if (json?.result && json.result !== 'success') throw new Error(json?.error || 'Submission failed')
+
+      setFeedbackName('')
+      setFeedbackEmail('')
+      setFeedbackMessage('')
+      setFeedbackSuccess('Feedback sent. Thank you!')
+    } catch (err) {
+      setFeedbackError(err instanceof Error ? err.message : 'Something went wrong. Please try again.')
+    } finally {
+      setFeedbackSubmitting(false)
+    }
+  }
 
   const goMoviePrev = () => {
     setMovieIndex((i) => (i - 1 + movieSlides.length) % movieSlides.length)
@@ -400,18 +454,12 @@ function AppContent() {
                     className="h-[300px] w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
                     loading="lazy"
                   />
-
-                  <div className="absolute bottom-4 left-4 right-4">
-                    <div className="inline-block max-w-[85%] rounded-2xl bg-white px-4 py-3 text-sm font-semibold text-neutral-900 shadow-sm">
-                      View Directory
-                    </div>
-                  </div>
                 </Link>
               </div>
 
               <div className="lg:col-span-8">
                 <div className="grid gap-6 md:grid-cols-3">
-                  <a href="#" className="group relative isolate block overflow-hidden rounded-3xl">
+                  <Link to="/directory" className="group relative isolate block overflow-hidden rounded-3xl">
                     <img
                       src={shopsImg}
                       alt="Shops"
@@ -435,14 +483,20 @@ function AppContent() {
                       </div>
                     </div>
 
+                    <div className="pointer-events-none absolute bottom-4 right-4 z-10">
+                      <span className="text-5xl font-black leading-none text-[#4B2D06] drop-shadow-[0_6px_14px_rgba(0,0,0,0.55)] transition-opacity duration-200 ease-out group-hover:opacity-0" aria-hidden="true">
+                        →
+                      </span>
+                    </div>
+
                     <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center text-center">
                       <div className="text-6xl font-extrabold leading-none tracking-tight text-white opacity-0 scale-95 transition-[opacity,transform] duration-150 ease-out delay-0 group-hover:duration-300 group-hover:delay-150 group-hover:opacity-100 group-hover:scale-100">
                         SHOPS
                       </div>
                     </div>
-                  </a>
+                  </Link>
 
-                  <a href="#" className="group relative isolate block overflow-hidden rounded-3xl">
+                  <Link to="/directory?category=Dining" className="group relative isolate block overflow-hidden rounded-3xl">
                     <img
                       src={foodAndDrinksImg}
                       alt="Food & Drinks"
@@ -466,14 +520,20 @@ function AppContent() {
                       </div>
                     </div>
 
+                    <div className="pointer-events-none absolute bottom-4 right-4 z-10">
+                      <span className="text-5xl font-black leading-none text-[#263E40] drop-shadow-[0_6px_14px_rgba(0,0,0,0.55)] transition-opacity duration-200 ease-out group-hover:opacity-0" aria-hidden="true">
+                        →
+                      </span>
+                    </div>
+
                     <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center text-center">
                       <div className="text-6xl font-extrabold leading-none tracking-tight text-white opacity-0 scale-95 transition-[opacity,transform] duration-150 ease-out delay-0 group-hover:duration-300 group-hover:delay-150 group-hover:opacity-100 group-hover:scale-100">
                         FOOD & DRINKS
                       </div>
                     </div>
-                  </a>
+                  </Link>
 
-                  <a href="#" className="group relative isolate block overflow-hidden rounded-3xl">
+                  <Link to="/events" className="group relative isolate block overflow-hidden rounded-3xl">
                     <img
                       src={eventsAndOffersImg}
                       alt="Events"
@@ -497,12 +557,18 @@ function AppContent() {
                       </div>
                     </div>
 
+                    <div className="pointer-events-none absolute bottom-4 right-4 z-10">
+                      <span className="text-5xl font-black leading-none text-[#3B543E] drop-shadow-[0_6px_14px_rgba(0,0,0,0.55)] transition-opacity duration-200 ease-out group-hover:opacity-0" aria-hidden="true">
+                        →
+                      </span>
+                    </div>
+
                     <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center text-center">
                       <div className="text-6xl font-extrabold leading-none tracking-tight text-white opacity-0 scale-95 transition-[opacity,transform] duration-150 ease-out delay-0 group-hover:duration-300 group-hover:delay-150 group-hover:opacity-100 group-hover:scale-100">
                         EVENTS
                       </div>
                     </div>
-                  </a>
+                  </Link>
                 </div>
               </div>
             </div>
@@ -726,6 +792,8 @@ function AppContent() {
           </div>
         </section>
 
+        <div className="mx-auto h-px max-w-6xl bg-neutral-200/50" />
+
         {/* <section className="bg-gradient-to-br from-palette-white via-palette-pearlAqua/45 to-palette-camel/35">
           <div className="w-full px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
             <div className="grid gap-6 lg:grid-cols-3">
@@ -889,52 +957,97 @@ function AppContent() {
           </div>
         </section>
 
-        <footer className="border-t border-palette-darkCyan/15 bg-[rgb(128_174_179)] text-white">
-          <div className="mx-auto max-w-6xl px-6 py-12">
-            <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-12">
-              <div className="lg:col-span-5">
-                <div className="flex items-center gap-4">
-                  <div className="h-10 w-1 rounded-full bg-palette-bronze" aria-hidden="true" />
-                  <div className="leading-tight">
-                    <div className="text-sm font-extrabold tracking-[0.2em]">THE SHOPS</div>
-                    <div className="text-[11px] font-semibold tracking-[0.25em] text-white/85">AT LAKE HAVASU</div>
+        <div className="mx-auto h-px max-w-6xl bg-neutral-200/50" />
+
+        <section className="bg-palette-white">
+          <div className="mx-auto max-w-6xl px-6 py-14">
+            <div className="grid gap-8 lg:grid-cols-12 lg:items-start">
+              <div className="lg:col-span-4">
+                <div className="text-xs font-semibold tracking-[0.25em] text-palette-darkCyan">FEEDBACK</div>
+                <h2 className="mt-2 text-3xl font-extrabold tracking-tight text-neutral-900">Help us improve your experience</h2>
+                <div className="mt-4 h-1 w-16 rounded-full bg-palette-bronze" aria-hidden="true" />
+              </div>
+
+              <div className="lg:col-span-8">
+                <div className="rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm sm:p-8">
+                  <p className="text-sm text-neutral-700">
+                    Help us improve your experience at The Shops at Lake Havasu by sharing your feedback.
+                  </p>
+
+                  <div className="mt-6 grid gap-4 sm:grid-cols-2">
+                    <div className="sm:col-span-1">
+                      <label className="block text-xs font-semibold tracking-[0.15em] text-neutral-700" htmlFor="feedback-name">
+                        NAME
+                      </label>
+                      <input
+                        id="feedback-name"
+                        value={feedbackName}
+                        onChange={(e) => setFeedbackName(e.target.value)}
+                        className="mt-2 w-full rounded-xl border border-neutral-200 bg-white px-4 py-2.5 text-sm text-neutral-900 shadow-sm outline-none focus:border-palette-darkCyan"
+                        placeholder="Your name"
+                        type="text"
+                        autoComplete="name"
+                      />
+                    </div>
+
+                    <div className="sm:col-span-1">
+                      <label className="block text-xs font-semibold tracking-[0.15em] text-neutral-700" htmlFor="feedback-email">
+                        EMAIL
+                      </label>
+                      <input
+                        id="feedback-email"
+                        value={feedbackEmail}
+                        onChange={(e) => setFeedbackEmail(e.target.value)}
+                        className="mt-2 w-full rounded-xl border border-neutral-200 bg-white px-4 py-2.5 text-sm text-neutral-900 shadow-sm outline-none focus:border-palette-darkCyan"
+                        placeholder="you@example.com"
+                        type="email"
+                        autoComplete="email"
+                      />
+                    </div>
+
+                    <div className="sm:col-span-2">
+                      <label className="block text-xs font-semibold tracking-[0.15em] text-neutral-700" htmlFor="feedback-message">
+                        MESSAGE
+                      </label>
+                      <textarea
+                        id="feedback-message"
+                        value={feedbackMessage}
+                        onChange={(e) => setFeedbackMessage(e.target.value)}
+                        className="mt-2 min-h-[120px] w-full resize-y rounded-xl border border-neutral-200 bg-white px-4 py-3 text-sm text-neutral-900 shadow-sm outline-none focus:border-palette-darkCyan"
+                        placeholder="Tell us what we can do better..."
+                      />
+                    </div>
+                  </div>
+
+                  {feedbackError ? (
+                    <div className="mt-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-center text-sm font-semibold text-red-700">{feedbackError}</div>
+                  ) : null}
+                  {feedbackSuccess ? (
+                    <div className="mt-4 flex items-center justify-center gap-3 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-center text-sm font-semibold text-green-800">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5 flex-none" aria-hidden="true">
+                        <path d="M20 6L9 17l-5-5" />
+                      </svg>
+                      <div>{feedbackSuccess}</div>
+                    </div>
+                  ) : null}
+
+                  <div className="mt-6 flex items-center justify-center">
+                    <button
+                      type="button"
+                      onClick={sendFeedback}
+                      disabled={feedbackSubmitting}
+                      className="inline-flex items-center justify-center rounded-md bg-[rgb(128_174_179)] px-5 py-3 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-[rgb(238_156_47)] disabled:cursor-not-allowed disabled:opacity-60"
+                    >
+                      {feedbackSubmitting ? 'Sending…' : 'Send Feedback'}
+                    </button>
                   </div>
                 </div>
-
-                <p className="mt-5 max-w-md text-sm leading-7 text-white/85">
-                  Open-air shopping, dining, and events in the heart of Lake Havasu City.
-                </p>
-              </div>
-
-              <div className="lg:col-span-4">
-                <div className="text-xs font-semibold tracking-[0.25em] text-white/85">QUICK LINKS</div>
-                <div className="mt-4 grid gap-2 text-sm font-semibold">
-                  <a className="text-white/85 hover:text-white" href="#">Home</a>
-                  <a className="text-white/85 hover:text-white" href="#">Stores</a>
-                  <a className="text-white/85 hover:text-white" href="#">Events</a>
-                  <a className="text-white/85 hover:text-white" href="#">Maps</a>
-                </div>
-              </div>
-
-              <div className="lg:col-span-3">
-                <div className="text-xs font-semibold tracking-[0.25em] text-white/85">CONTACT</div>
-                <div className="mt-4 space-y-2 text-sm text-white/85">
-                  <div>Lake Havasu City, AZ</div>
-                  <a className="block hover:text-white" href="#">(928) 000-0000</a>
-                  <a className="block hover:text-white" href="#">info@shopslakehavasu.com</a>
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-10 flex flex-col gap-3 border-t border-white/15 pt-6 text-xs text-white/70 sm:flex-row sm:items-center sm:justify-between">
-              <div>© {new Date().getFullYear()} The Shops at Lake Havasu. All rights reserved.</div>
-              <div className="flex gap-5">
-                <a className="hover:text-white" href="#">Privacy</a>
-                <a className="hover:text-white" href="#">Terms</a>
               </div>
             </div>
           </div>
-        </footer>
+        </section>
+
+        <SiteFooter />
       </main>
     </div>
   )
