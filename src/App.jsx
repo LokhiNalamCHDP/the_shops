@@ -8,6 +8,8 @@ import shopsImg from './assets/images/shops.jpg'
 import eventsAndOffersImg from './assets/images/events_and_offers.jpg'
 import stateParkImg from './assets/images/LAKE HAVASU STATE PARK.png'
 import lakeHavasuMedicalCenterImg from './assets/images/Lake Havasu Medical Center.jpg'
+import shopsAtHavasuAerialImg from './assets/images/ShopsAtHavasuAerial.webp'
+import shopsAtHavasuLongImg from './assets/images/ShopsAtHavasuLong.png'
 import movie1Img from './assets/images/movies/1.webp'
 import movie2Img from './assets/images/movies/2.webp'
 import movie3Img from './assets/images/movies/3.jpg'
@@ -27,6 +29,8 @@ import { Routes, Route, Link, useLocation } from 'react-router-dom';
 import Directory from './pages/Directory'
 import Maps from './pages/Maps'
 import Events from './pages/Events'
+import Privacy from './pages/Privacy'
+import Terms from './pages/Terms'
 import SiteHeader from './components/SiteHeader'
 import SiteFooter from './components/SiteFooter'
 
@@ -131,6 +135,10 @@ function AppContent() {
   const [charIndex, setCharIndex] = useState(0)
   const [isDeleting, setIsDeleting] = useState(false)
 
+  const leasingSlides = useMemo(() => [shopsAtHavasuAerialImg, shopsAtHavasuLongImg], [])
+  const [leasingIndex, setLeasingIndex] = useState(0)
+  const [isLeasingModalOpen, setIsLeasingModalOpen] = useState(false)
+
   const [feedbackName, setFeedbackName] = useState('')
   const [feedbackEmail, setFeedbackEmail] = useState('')
   const [feedbackMessage, setFeedbackMessage] = useState('')
@@ -232,6 +240,14 @@ function AppContent() {
 
   const goMovieNext = () => {
     setMovieIndex((i) => (i + 1) % movieSlides.length)
+  }
+
+  const goLeasingPrev = () => {
+    setLeasingIndex((i) => (i - 1 + leasingSlides.length) % leasingSlides.length)
+  }
+
+  const goLeasingNext = () => {
+    setLeasingIndex((i) => (i + 1) % leasingSlides.length)
   }
 
   useEffect(() => {
@@ -692,7 +708,9 @@ function AppContent() {
 
                 <div className="mt-8">
                   <a
-                    href="#"
+                    href="https://www.facebook.com/theshopsatlakehavasu/"
+                    target="_blank"
+                    rel="noreferrer"
                     className="inline-flex w-full items-center justify-center rounded-md bg-[rgb(128_174_179)] px-4 py-3 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-[rgb(238_156_47)]"
                   >
                     View Discounts & Offers
@@ -947,6 +965,48 @@ function AppContent() {
 
         <div className="mx-auto h-px max-w-6xl bg-neutral-200/50" />
 
+        <section className="bg-white">
+          <div className="mx-auto max-w-7xl px-6 py-14">
+            <div className="grid gap-8 lg:grid-cols-12 lg:items-start">
+              <div className="lg:col-span-5">
+                <div className="text-xs font-semibold tracking-[0.25em] text-palette-darkCyan">EVENT SPACE</div>
+                <h2 className="mt-2 text-3xl font-extrabold tracking-tight text-neutral-900">The Shops Event Space</h2>
+                <div className="mt-4 h-1 w-16 rounded-full bg-palette-bronze" aria-hidden="true" />
+
+                <p className="mt-4 text-sm leading-7 text-neutral-800">
+                  Whether you’re a local organization, small business, or planning a community event, our space is designed
+                  to bring people together.
+                </p>
+
+                <p className="mt-4 text-sm leading-7 text-neutral-800">
+                  A flexible, event-ready space right at the heart of the mall—perfect for markets, workshops,
+                  celebrations, and community-driven experiences.
+                </p>
+
+                <div className="mt-6 text-sm font-semibold text-neutral-900">Want to host an event?</div>
+                <div className="mt-2 text-sm text-neutral-800">
+                  Contact Us:{' '}
+                  <a className="font-semibold text-[rgb(128_174_179)] hover:underline" href="mailto:admin@theshopslhc.com">
+                    admin@theshopslhc.com
+                  </a>
+                </div>
+              </div>
+
+              <div className="lg:col-span-7">
+                <div className="overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-sm">
+                  <div className="relative w-full h-[240px] sm:h-[280px] lg:h-[320px]">
+                    <video className="absolute inset-0 h-full w-full object-cover" controls preload="metadata">
+                      Your browser does not support the video tag.
+                    </video>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <div className="mx-auto h-px max-w-6xl bg-neutral-200/50" />
+
         <section className="bg-palette-white">
           <div className="mx-auto max-w-6xl px-6 py-14">
             <div className="grid gap-8 lg:grid-cols-12 lg:items-start">
@@ -1035,6 +1095,134 @@ function AppContent() {
           </div>
         </section>
 
+        <div className="mx-auto h-px max-w-6xl bg-neutral-200/50" />
+
+        <section className="bg-white">
+          <div className="mx-auto max-w-7xl px-6 py-14">
+            <div className="grid gap-8 lg:grid-cols-12 lg:items-start">
+              <div className="lg:col-span-7">
+                <div className="relative overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-sm">
+                  <div className="relative h-[260px] w-full sm:h-[320px]">
+                    <img
+                      src={leasingSlides[leasingIndex]}
+                      alt="Leasing"
+                      className="absolute inset-0 h-full w-full object-cover"
+                      loading="lazy"
+                    />
+                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/35 via-black/10 to-transparent" aria-hidden="true" />
+
+                    <button
+                      type="button"
+                      onClick={goLeasingPrev}
+                      aria-label="Previous image"
+                      className="absolute left-3 top-1/2 -translate-y-1/2 rounded-full bg-white/85 p-2 text-neutral-900 shadow-sm backdrop-blur hover:bg-white"
+                    >
+                      ‹
+                    </button>
+                    <button
+                      type="button"
+                      onClick={goLeasingNext}
+                      aria-label="Next image"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full bg-white/85 p-2 text-neutral-900 shadow-sm backdrop-blur hover:bg-white"
+                    >
+                      ›
+                    </button>
+
+                    <div className="absolute bottom-3 left-0 right-0 flex items-center justify-center gap-2">
+                      {leasingSlides.map((_, idx) => (
+                        <button
+                          key={idx}
+                          type="button"
+                          aria-label={`Go to image ${idx + 1}`}
+                          onClick={() => setLeasingIndex(idx)}
+                          className={`h-2 rounded-full transition-all ${idx === leasingIndex ? 'w-8 bg-white' : 'w-3 bg-white/60'}`}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="lg:col-span-5">
+                <div className="text-xs font-semibold tracking-[0.25em] text-palette-darkCyan">LEASING</div>
+                <h2 className="mt-2 text-3xl font-extrabold tracking-tight text-neutral-900">Now Leasing at The Shops at Lake Havasu</h2>
+                <div className="mt-4 h-1 w-16 rounded-full bg-palette-bronze" aria-hidden="true" />
+
+                <div className="mt-4 text-base font-extrabold tracking-tight text-neutral-900">Bring Your Brand to the Desert’s Retail Destination</div>
+                <p className="mt-4 text-sm leading-7 text-neutral-800">
+                  Looking to open a new storefront? We offer flexible leasing opportunities in a high-traffic, open-air
+                  shopping center that features national retailers, restaurants, and entertainment—all surrounded by scenic
+                  Lake Havasu views.
+                </p>
+
+                <div className="mt-8">
+                  <button
+                    type="button"
+                    onClick={() => setIsLeasingModalOpen(true)}
+                    className="inline-flex items-center justify-center rounded-md bg-[rgb(128_174_179)] px-5 py-3 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-[rgb(238_156_47)]"
+                  >
+                    Get in Touch
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {isLeasingModalOpen ? (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center px-6 py-10"
+            role="dialog"
+            aria-modal="true"
+          >
+            <button
+              type="button"
+              className="absolute inset-0 bg-black/50"
+              onClick={() => setIsLeasingModalOpen(false)}
+              aria-label="Close"
+            />
+
+            <div className="relative w-full max-w-2xl overflow-hidden rounded-2xl bg-white shadow-2xl">
+              <div className="flex items-start justify-between gap-4 border-b border-neutral-200 px-6 py-5">
+                <div>
+                  <div className="text-xs font-semibold tracking-[0.25em] text-palette-darkCyan">LEASING</div>
+                  <div className="mt-2 text-2xl font-extrabold tracking-tight text-neutral-900">Why Lease With Us</div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setIsLeasingModalOpen(false)}
+                  className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-neutral-200 bg-white text-neutral-900 shadow-sm hover:bg-neutral-50"
+                  aria-label="Close"
+                >
+                  ×
+                </button>
+              </div>
+
+              <div className="px-6 py-6">
+                <div className="space-y-2 text-sm leading-7 text-neutral-800">
+                  <div>Prime location with over 720,000 sq ft of retail space</div>
+                  <div>Anchored by major brands like Dillard’s, Walmart, and PetSmart</div>
+                  <div>Host to regular foot-traffic-driving events</div>
+                  <div>Opportunities for both short-term pop-ups and long-term tenants</div>
+                  <div>Supportive marketing and mall operations team</div>
+                </div>
+
+                <div className="mt-8">
+                  <div className="text-base font-extrabold tracking-tight text-neutral-900">📄 Get in Touch</div>
+                  <p className="mt-2 text-sm leading-7 text-neutral-800">
+                    Interested in leasing a space? Let’s talk about what’s available and how we can support your goals.
+                  </p>
+                  <div className="mt-3 text-sm text-neutral-800">
+                    <a className="font-semibold text-[rgb(128_174_179)] hover:underline" href="mailto:admin@theshopslhc.com">
+                      admin@theshopslhc.com
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        ) : null}
+
         <SiteFooter />
       </main>
     </div>
@@ -1048,6 +1236,8 @@ export default function App() {
       <Route path="/directory" element={<Directory />} />
       <Route path="/events" element={<Events />} />
       <Route path="/maps" element={<Maps />} />
+      <Route path="/privacy" element={<Privacy />} />
+      <Route path="/terms" element={<Terms />} />
     </Routes>
   )
 }

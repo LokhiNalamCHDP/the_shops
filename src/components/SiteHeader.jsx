@@ -17,7 +17,7 @@ export default function SiteHeader({ variant = 'solid' }) {
   return (
     <header className={shellClass}>
       <div className={innerClass}>
-        <div className="flex items-center gap-4">
+        <Link to="/" className="flex items-center gap-4">
           <div className="h-9 w-1 rounded-full bg-palette-bronze" aria-hidden="true" />
           <div className="leading-tight">
             <div className={isOverlay ? 'text-sm font-extrabold tracking-[0.2em]' : 'text-sm font-extrabold tracking-[0.2em] text-neutral-900'}>
@@ -33,7 +33,7 @@ export default function SiteHeader({ variant = 'solid' }) {
               AT LAKE HAVASU
             </div>
           </div>
-        </div>
+        </Link>
 
         <nav className={isOverlay ? 'hidden items-center gap-8 text-base font-semibold tracking-wide md:flex' : 'flex items-center gap-6 text-sm font-semibold'}>
           <Link to="/" className={isPath('/') ? linkActive : linkBase}>

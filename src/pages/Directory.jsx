@@ -18,6 +18,7 @@ import mauricesLogo from '../assets/images/logos/maurices.webp'
 import northsideGrillLogo from '../assets/images/logos/northsidegrill.png'
 import petsmartLogo from '../assets/images/logos/petsmart.png'
 import sallyLogo from '../assets/images/logos/sally.webp'
+import starCinemasLogo from '../assets/images/logos/starcinemas.png'
 import sunshineIndoorPlayLogo from '../assets/images/logos/sunshineindoorplay.png'
 import tmobileLogo from '../assets/images/logos/tmobile.png'
 import SiteFooter from '../components/SiteFooter'
@@ -85,6 +86,7 @@ const Directory = () => {
       "petsmart": petsmartLogo,
       "sally": sallyLogo,
       'sally-beauty': sallyLogo,
+      'star-cinemas': starCinemasLogo,
       'sunshine-indoor-play': sunshineIndoorPlayLogo,
       't-mobile': tmobileLogo,
     }),
@@ -107,6 +109,31 @@ const Directory = () => {
       't-mobile': 'Services',
 
       // Everything else defaults to Shopping
+    }),
+    [],
+  )
+
+  const aboutByStoreId = useMemo(
+    () => ({
+      'altitude-trampoline-park': ['Entertainment'],
+      'star-cinemas': ['Movies'],
+      'sunshine-indoor-play': ['Indoor play', 'Beverages'],
+      'buffalo-wild-wings': ['Food', 'Drinks', 'Dining'],
+      'northside-grill': ['Food', 'Drinks', 'Dining'],
+      'frozen-spoon': ['Food'],
+      'convergence-health': ['Healthcare'],
+      'great-clips': ['Hair salon'],
+      't-mobile': ['Mobile services'],
+      'kay-jewelers': ['Shopping'],
+      'maurices': ['Shopping'],
+      'famous-footwear': ['Shopping'],
+      'dollar-tree': ['Shopping'],
+      'petsmart': ['Shopping'],
+      'sally-beauty': ['Shopping'],
+      'dillard-s': ['Shopping'],
+      'jcpenny': ['Shopping'],
+      'gamestop': ['Shopping'],
+      'bealls': ['Shopping'],
     }),
     [],
   )
@@ -227,7 +254,10 @@ const Directory = () => {
 
     return stores
       .filter((store) => {
-        if (activeCategory !== 'all' && store.category !== activeCategory) return false
+        if (activeCategory !== 'all' && store.category !== activeCategory) {
+          if (store.id === 'sunshine-indoor-play' && activeCategory === 'Dining') return true
+          return false
+        }
         if (!q) return true
 
         const haystack = [store.name, store.category, store.description, store.phone, store.hours]
@@ -297,12 +327,17 @@ const Directory = () => {
 
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {filteredStores.map((store) => (
-            <div key={store.id} className="rounded-2xl border border-neutral-200 bg-white shadow-sm">
+            <div
+              key={store.id}
+              className="rounded-2xl border border-neutral-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:border-neutral-300 hover:bg-[rgba(128,174,179,0.12)] hover:shadow-md"
+            >
               <a
                 href={websiteByStoreId[store.id] || undefined}
                 target={websiteByStoreId[store.id] ? '_blank' : undefined}
                 rel={websiteByStoreId[store.id] ? 'noreferrer' : undefined}
-                className="m-4 flex h-44 items-center justify-center rounded-2xl bg-white"
+                className={`m-4 flex h-44 items-center justify-center rounded-2xl bg-white ${
+                  websiteByStoreId[store.id] ? 'cursor-pointer' : ''
+                }`}
               >
                 {logoByStoreId[store.id] ? (
                   <img
@@ -340,7 +375,34 @@ const Directory = () => {
                     ) : (
                       <div className="truncate text-base font-semibold text-neutral-900">{store.name}</div>
                     )}
+
+                    <div className="mt-1 truncate text-xs font-semibold text-neutral-600">
+                      {(
+                        aboutByStoreId[store.id] ||
+                        [
+                          store.category === 'Dining'
+                            ? 'Food & drinks'
+                            : store.category === 'Entertainment'
+                              ? 'Entertainment'
+                              : store.category === 'Healthcare'
+                                ? 'Healthcare'
+                                : store.category === 'Services'
+                                  ? 'Services'
+                                  : 'Shopping',
+                        ]
+                      )
+                        .filter(Boolean)
+                        .join(' / ')}
+                    </div>
                   </div>
+                  {store.phone ? (
+                    <a
+                      href={`tel:${String(store.phone).replace(/[^\d+]/g, '')}`}
+                      className="shrink-0 text-sm font-semibold text-[rgb(128_174_179)] hover:underline"
+                    >
+                      {store.phone}
+                    </a>
+                  ) : null}
                 </div>
               </div>
             </div>

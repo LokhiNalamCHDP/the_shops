@@ -97,6 +97,13 @@ export default function Maps() {
   }, [])
 
   const [selectedStoreId, setSelectedStoreId] = useState(stores[0]?.id ?? '')
+  const sortedStores = useMemo(
+    () =>
+      stores
+        .slice()
+        .sort((a, b) => String(a?.name ?? '').localeCompare(String(b?.name ?? ''), undefined, { sensitivity: 'base' })),
+    [stores],
+  )
   const selectedStore = useMemo(
     () => stores.find((s) => s.id === selectedStoreId) ?? stores[0],
     [selectedStoreId, stores],
@@ -475,7 +482,7 @@ export default function Maps() {
                       value={selectedStoreId}
                       onChange={(e) => setSelectedStoreId(e.target.value)}
                     >
-                      {stores.map((store) => (
+                      {sortedStores.map((store) => (
                         <option key={store.id} value={store.id}>
                           {store.name}
                         </option>
