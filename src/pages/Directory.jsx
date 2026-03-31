@@ -10,7 +10,6 @@ import dillardsLogo from '../assets/images/logos/dillards.png'
 import dollarTreeLogo from '../assets/images/logos/dollartree.webp'
 import famousFootwearLogo from '../assets/images/logos/famousfootwearlogo.png'
 import frozenSpoonLogo from '../assets/images/logos/frozenspoon.webp'
-import gameStopLogo from '../assets/images/logos/gamestop.png'
 import greatClipsLogo from '../assets/images/logos/greatclips.png'
 import jcpenneyLogo from '../assets/images/logos/jcpenney.png'
 import kayJewelersLogo from '../assets/images/logos/kayjewellers.png'
@@ -18,8 +17,15 @@ import mauricesLogo from '../assets/images/logos/maurices.webp'
 import northsideGrillLogo from '../assets/images/logos/northsidegrill.png'
 import petsmartLogo from '../assets/images/logos/petsmart.png'
 import sallyLogo from '../assets/images/logos/sally.webp'
+import starCinemasLogo from '../assets/images/logos/starcinemas.png'
 import sunshineIndoorPlayLogo from '../assets/images/logos/sunshineindoorplay.png'
 import tmobileLogo from '../assets/images/logos/tmobile.png'
+import milemarkersLogo from '../assets/images/logos/milemarkers.webp'
+import kidsLittleSmilesLogo from '../assets/images/logos/kidslittlesmiles.png'
+import riverRockOralSurgeryLogo from '../assets/images/logos/riverrockoralsurgery.svg'
+import splitFingerAthleticsLogo from '../assets/images/logos/splitfingerathletics.jpg'
+import trademarkRetailLogo from '../assets/images/logos/trademarkretail.webp'
+import walmartLogo from '../assets/images/logos/walmart.png'
 import SiteFooter from '../components/SiteFooter'
 
 const Directory = () => {
@@ -31,6 +37,7 @@ const Directory = () => {
       { id: 'Dining', label: 'Dining' },
       { id: 'Shopping', label: 'Shopping' },
       { id: 'Entertainment', label: 'Entertainment' },
+      { id: 'Outdoor/Indoor Play', label: 'Outdoor/Indoor Play' },
       { id: 'Healthcare', label: 'Healthcare' },
       { id: 'Services', label: 'Services' },
     ],
@@ -47,7 +54,6 @@ const Directory = () => {
       'dollar-tree': 'https://locations.dollartree.com/az/lake-havasu/5601-highway-95-n',
       'famous-footwear': 'https://www.famousfootwear.com/stores/az/lake-havasu/86404/the-shops-at-lake-havasu-02753',
       'frozen-spoon': 'https://frozenspoonyogurt.com/contact-us',
-      'gamestop': 'https://www.gamestop.com/store/us/az/lake-havasu-city/6128/shops-at-lake-havasu-gamestop',
       'great-clips': 'https://salons.greatclips.com/us/az/lake-havasu/5601-hwy-95-n',
       'jcpenny': 'https://www.jcpenney.com/locations/az/lakehavasucity/clothing-stores-lakehavasucity-az-2940.html',
       'kay-jewelers': 'https://stores.kay.com/az/lake-havasu-city/2826',
@@ -58,6 +64,12 @@ const Directory = () => {
       'star-cinemas': 'https://starcinemashavasu.com/',
       'sunshine-indoor-play': 'https://www.sunshineindoorplay.com/',
       't-mobile': 'https://www.t-mobile.com/stores/bd/t-mobile-lake-havasu-city-az-86404-464g',
+      'milemarkers': 'https://milemarkers.us/',
+      'kids-little-smiles': 'https://kidslittlesmiles.com/',
+      'river-rock-oral-surgery': 'https://riverrockoralsurgery.com/',
+      'split-finger-athletics': 'https://www.facebook.com/p/Split-Finger-Athletics-61581853573220/',
+      'trademark-retail': 'https://www.trademarkretail.com/',
+      'walmart': 'https://www.walmart.com/store/4215-lake-havasu-city-az',
     }),
     [],
   )
@@ -74,7 +86,6 @@ const Directory = () => {
       'dollar-tree': dollarTreeLogo,
       'famous-footwear': famousFootwearLogo,
       'frozen-spoon': frozenSpoonLogo,
-      'gamestop': gameStopLogo,
       "greatclips": greatClipsLogo,
       'great-clips': greatClipsLogo,
       "jcpenney": jcpenneyLogo,
@@ -85,8 +96,15 @@ const Directory = () => {
       "petsmart": petsmartLogo,
       "sally": sallyLogo,
       'sally-beauty': sallyLogo,
+      'star-cinemas': starCinemasLogo,
       'sunshine-indoor-play': sunshineIndoorPlayLogo,
       't-mobile': tmobileLogo,
+      'milemarkers': milemarkersLogo,
+      'kids-little-smiles': kidsLittleSmilesLogo,
+      'river-rock-oral-surgery': riverRockOralSurgeryLogo,
+      'split-finger-athletics': splitFingerAthleticsLogo,
+      'trademark-retail': trademarkRetailLogo,
+      'walmart': walmartLogo,
     }),
     [],
   )
@@ -97,9 +115,10 @@ const Directory = () => {
       'northside-grill': 'Dining',
       'frozen-spoon': 'Dining',
 
-      'altitude-trampoline-park': 'Entertainment',
+      'altitude-trampoline-park': 'Outdoor/Indoor Play',
       'sunshine-indoor-play': 'Services',
       'star-cinemas': 'Entertainment',
+      'split-finger-athletics': 'Outdoor/Indoor Play',
 
       'convergence-health': 'Healthcare',
 
@@ -107,6 +126,36 @@ const Directory = () => {
       't-mobile': 'Services',
 
       // Everything else defaults to Shopping
+    }),
+    [],
+  )
+
+  const aboutByStoreId = useMemo(
+    () => ({
+      'altitude-trampoline-park': ['Outdoor/Indoor Play'],
+      'star-cinemas': ['Movies'],
+      'sunshine-indoor-play': ['Indoor play', 'Beverages'],
+      'buffalo-wild-wings': ['Food', 'Drinks', 'Dining'],
+      'northside-grill': ['Food', 'Drinks', 'Dining'],
+      'frozen-spoon': ['Food'],
+      'convergence-health': ['Healthcare'],
+      'great-clips': ['Hair salon'],
+      't-mobile': ['Mobile services'],
+      'kay-jewelers': ['Shopping'],
+      'maurices': ['Shopping'],
+      'famous-footwear': ['Shopping'],
+      'dollar-tree': ['Shopping'],
+      'petsmart': ['Shopping'],
+      'sally-beauty': ['Shopping'],
+      'dillard-s': ['Shopping'],
+      'jcpenny': ['Shopping'],
+      'bealls': ['Shopping'],
+      'milemarkers': ['Healthcare'],
+      'kids-little-smiles': ['Healthcare'],
+      'river-rock-oral-surgery': ['Healthcare'],
+      'split-finger-athletics': ['Outdoor/Indoor Play'],
+      'trademark-retail': ['Shopping'],
+      'walmart': ['Shopping'],
     }),
     [],
   )
@@ -227,7 +276,10 @@ const Directory = () => {
 
     return stores
       .filter((store) => {
-        if (activeCategory !== 'all' && store.category !== activeCategory) return false
+        if (activeCategory !== 'all' && store.category !== activeCategory) {
+          if (store.id === 'sunshine-indoor-play' && activeCategory === 'Dining') return true
+          return false
+        }
         if (!q) return true
 
         const haystack = [store.name, store.category, store.description, store.phone, store.hours]
@@ -297,12 +349,17 @@ const Directory = () => {
 
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {filteredStores.map((store) => (
-            <div key={store.id} className="rounded-2xl border border-neutral-200 bg-white shadow-sm">
+            <div
+              key={store.id}
+              className="rounded-2xl border border-neutral-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:border-neutral-300 hover:bg-[rgba(128,174,179,0.12)] hover:shadow-md"
+            >
               <a
                 href={websiteByStoreId[store.id] || undefined}
                 target={websiteByStoreId[store.id] ? '_blank' : undefined}
                 rel={websiteByStoreId[store.id] ? 'noreferrer' : undefined}
-                className="m-4 flex h-44 items-center justify-center rounded-2xl bg-white"
+                className={`m-4 flex h-44 items-center justify-center rounded-2xl bg-white ${
+                  websiteByStoreId[store.id] ? 'cursor-pointer' : ''
+                }`}
               >
                 {logoByStoreId[store.id] ? (
                   <img
@@ -340,7 +397,34 @@ const Directory = () => {
                     ) : (
                       <div className="truncate text-base font-semibold text-neutral-900">{store.name}</div>
                     )}
+
+                    <div className="mt-1 truncate text-xs font-semibold text-neutral-600">
+                      {(
+                        aboutByStoreId[store.id] ||
+                        [
+                          store.category === 'Dining'
+                            ? 'Food & drinks'
+                            : store.category === 'Entertainment'
+                              ? 'Entertainment'
+                              : store.category === 'Healthcare'
+                                ? 'Healthcare'
+                                : store.category === 'Services'
+                                  ? 'Services'
+                                  : 'Shopping',
+                        ]
+                      )
+                        .filter(Boolean)
+                        .join(' / ')}
+                    </div>
                   </div>
+                  {store.phone ? (
+                    <a
+                      href={`tel:${String(store.phone).replace(/[^\d+]/g, '')}`}
+                      className="shrink-0 text-sm font-semibold text-[rgb(128_174_179)] hover:underline"
+                    >
+                      {store.phone}
+                    </a>
+                  ) : null}
                 </div>
               </div>
             </div>
