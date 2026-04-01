@@ -3,6 +3,46 @@ import SiteHeader from '../components/SiteHeader'
 
 export default function Events() {
   useEffect(() => {
+    // Veezi API fetch for console data
+    const fetchVeeziData = async () => {
+      const apiKey = 'ekpcmqeztqget5gy38e0k8tthc'
+      try {
+        // First get web session for authentication
+        const sessionResponse = await fetch(`https://api.us.veezi.com/v1/websession`, {
+          headers: {
+            VeeziAccessToken: apiKey,
+            Accept: "application/json",
+          },
+        })
+        console.log('Web session response status:', sessionResponse.status)
+        const sessionText = await sessionResponse.text()
+        console.log('Web session response body:', sessionText)
+        
+        if (sessionResponse.ok) {
+          const sessionData = JSON.parse(sessionText)
+          console.log('Web session data:', sessionData)
+        }
+        
+        // Now get films using the same authentication
+        const filmsResponse = await fetch('https://api.us.veezi.com/v1/film', {
+          headers: { 
+            'VeeziAccessToken': apiKey,
+            'Accept': 'application/json'
+          },
+        })
+        console.log('Films response status:', filmsResponse.status)
+        const filmsText = await filmsResponse.text()
+        console.log('Films response body:', filmsText)
+        
+        if (!filmsResponse.ok) throw new Error(`HTTP ${filmsResponse.status}`)
+        const filmsData = JSON.parse(filmsText)
+        console.log('Veezi API film data:', filmsData)
+      } catch (err) {
+        console.error('Veezi API error:', err)
+      }
+    }
+
+    fetchVeeziData()
     const appId = import.meta.env?.VITE_FACEBOOK_APP_ID
     const sdkId = 'facebook-jssdk'
 
